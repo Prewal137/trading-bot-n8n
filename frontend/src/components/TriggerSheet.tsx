@@ -1,5 +1,8 @@
+import { useState } from "react"
 import type { NodeKind } from "./CreateWorkflow"
+
 import { Button } from "@/components/ui/button"
+
 import {
   Sheet,
   SheetClose,
@@ -23,11 +26,28 @@ import {
 
 type NodeMetadata = any
 
+const SUPPORTED_TRIGGERS = [
+  {
+    id: "timer",
+    title: "Timer",
+    description: "Run this trigger every x seconds/minutes",
+  },
+  {
+    id: "price-trigger",
+    title: "Price Trigger",
+    description:
+      "Runs whenever the price goes above or below a certain number for an asset",
+  },
+]
+
 export const TriggerSheet = ({
   onSelect,
 }: {
   onSelect: (kind: NodeKind, metadata: NodeMetadata) => void
 }) => {
+
+  const [metadata, setMetadata] = useState({})
+
   return (
     <Sheet>
       <SheetTrigger asChild>
@@ -43,23 +63,28 @@ export const TriggerSheet = ({
 
             <Select>
               <SelectTrigger className="w-[180px]">
-                <SelectValue placeholder="Select a fruit" />
+                <SelectValue placeholder="Select trigger" />
               </SelectTrigger>
 
               <SelectContent>
                 <SelectGroup>
-                  <SelectLabel>Fruits</SelectLabel>
-                  <SelectItem value="apple">Apple</SelectItem>
-                  <SelectItem value="banana">Banana</SelectItem>
-                  <SelectItem value="blueberry">Blueberry</SelectItem>
-                  <SelectItem value="grapes">Grapes</SelectItem>
-                  <SelectItem value="pineapple">Pineapple</SelectItem>
+                  <SelectLabel>Triggers</SelectLabel>
+
+                  {SUPPORTED_TRIGGERS.map(({ id, title }) => (
+                    <SelectItem
+                      key={id}
+                      value={id}
+                      onSelect={() => onSelect(id as NodeKind, metadata)}
+                    >
+                      {title}
+                    </SelectItem>
+                  ))}
+
                 </SelectGroup>
               </SelectContent>
             </Select>
 
           </SheetDescription>
-
         </SheetHeader>
 
         <SheetFooter>
