@@ -14,11 +14,12 @@ interface NodeType {
   data: {
     type: "action" | "trigger";
     kind: NodeKind;
+    metadata: NodeMetadata;
   };
   id: string;
   position: { x: number; y: number };
 }
-
+export type NodeMetadata = any;
 interface Edge {
   id: string;
   source: string;
@@ -54,8 +55,13 @@ export function CreateWorkflow() {
               ...nodes,
               {
                 id: Math.random().toString(),
+                data: {
+                    type: "trigger",
+                    kind,
+                    metadata
+                },
                 position: { x: 0, y: 0 },
-                data: { type: "trigger", kind },
+                
               },
             ])
           }

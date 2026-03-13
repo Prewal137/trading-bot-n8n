@@ -1,5 +1,5 @@
 import { useState } from "react"
-import type { NodeKind } from "./CreateWorkflow"
+import type { NodeKind, NodeMetadata } from "./CreateWorkflow"
 
 import { Button } from "@/components/ui/button"
 
@@ -11,7 +11,6 @@ import {
   SheetFooter,
   SheetHeader,
   SheetTitle,
-  SheetTrigger,
 } from "@/components/ui/sheet"
 
 import {
@@ -23,8 +22,6 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select"
-
-type NodeMetadata = any
 
 const SUPPORTED_TRIGGERS = [
   {
@@ -45,15 +42,10 @@ export const TriggerSheet = ({
 }: {
   onSelect: (kind: NodeKind, metadata: NodeMetadata) => void
 }) => {
-
   const [metadata, setMetadata] = useState({})
 
   return (
-    <Sheet>
-      <SheetTrigger asChild>
-        <Button variant="outline">Open</Button>
-      </SheetTrigger>
-
+    <Sheet open={true}>
       <SheetContent>
         <SheetHeader>
           <SheetTitle>Select trigger</SheetTitle>
@@ -62,22 +54,27 @@ export const TriggerSheet = ({
             Select the type of trigger that you need
 
             <Select>
-              <SelectTrigger className="w-[180px]">
-                <SelectValue placeholder="Select trigger" />
+              <SelectTrigger className="w-full">
+                <SelectValue placeholder="Select a fruit" />
               </SelectTrigger>
 
               <SelectContent>
                 <SelectGroup>
-                  <SelectLabel>Triggers</SelectLabel>
 
-                  {SUPPORTED_TRIGGERS.map(({ id, title }) => (
-                    <SelectItem
-                      key={id}
-                      value={id}
-                      onSelect={() => onSelect(id as NodeKind, metadata)}
-                    >
-                      {title}
-                    </SelectItem>
+                  {SUPPORTED_TRIGGERS.map(({ id, title, description }) => (
+                    <>
+                      <SelectItem
+                        key={id}
+                        value={id}
+                        onSelect={() =>
+                          onSelect(id as NodeKind, metadata)
+                        }
+                      >
+                        {title}
+                      </SelectItem>
+
+                      {/* <SelectLabel>{description}</SelectLabel> */}
+                    </>
                   ))}
 
                 </SelectGroup>
@@ -88,7 +85,7 @@ export const TriggerSheet = ({
         </SheetHeader>
 
         <SheetFooter>
-          <Button type="submit">Save changes</Button>
+          <Button type="submit">Create Trigger</Button>
 
           <SheetClose asChild>
             <Button variant="outline">Close</Button>
