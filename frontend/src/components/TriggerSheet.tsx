@@ -23,17 +23,8 @@ import {
 } from "@/components/ui/select"
 
 const SUPPORTED_TRIGGERS = [
-  {
-    id: "timer",
-    title: "Timer",
-    description: "Run this trigger every x seconds/minutes",
-  },
-  {
-    id: "price-trigger",
-    title: "Price Trigger",
-    description:
-      "Runs whenever the price goes above or below a certain number for an asset",
-  },
+  { id: "timer-trigger", title: "Timer" },
+  { id: "price-trigger", title: "Price Trigger" },
 ]
 
 export const TriggerSheet = ({
@@ -43,12 +34,14 @@ export const TriggerSheet = ({
 }) => {
 
   const [metadata, setMetadata] = useState({})
+  const [open, setOpen] = useState(true)
+
   const [selectedTrigger, setSelectedTrigger] = useState<NodeKind>(
-    SUPPORTED_TRIGGERS[0].id as NodeKind
+    "timer-trigger"
   )
 
   return (
-    <Sheet open={true}>
+    <Sheet open={open} onOpenChange={setOpen}>
       <SheetContent>
 
         <SheetHeader>
@@ -56,41 +49,45 @@ export const TriggerSheet = ({
 
           <SheetDescription>
             Select the type of trigger that you need
-
-            <Select value={selectedTrigger}>
-              <SelectTrigger className="w-full">
-                <SelectValue placeholder="Select a fruit" />
-              </SelectTrigger>
-
-              <SelectContent>
-                <SelectGroup>
-
-                  {SUPPORTED_TRIGGERS.map(({ id, title }) => (
-                    <SelectItem
-                      key={id}
-                      onSelect={() => setSelectedTrigger(id as NodeKind)}
-                      value={id}
-                    >
-                      {title}
-                    </SelectItem>
-                  ))}
-
-                </SelectGroup>
-              </SelectContent>
-
-            </Select>
-
           </SheetDescription>
 
         </SheetHeader>
 
-        <SheetFooter>
+        <div className="mt-4">
+
+          <Select
+            value={selectedTrigger}
+            onValueChange={(value) =>
+              setSelectedTrigger(value as NodeKind)
+            }
+          >
+            <SelectTrigger className="w-full">
+              <SelectValue placeholder="Select trigger" />
+            </SelectTrigger>
+
+            <SelectContent>
+              <SelectGroup>
+
+                {SUPPORTED_TRIGGERS.map(({ id, title }) => (
+                  <SelectItem key={id} value={id}>
+                    {title}
+                  </SelectItem>
+                ))}
+
+              </SelectGroup>
+            </SelectContent>
+
+          </Select>
+
+        </div>
+
+        <SheetFooter className="mt-6">
 
           <Button
             onClick={() => {
               onSelect(selectedTrigger, metadata)
+              setOpen(false)
             }}
-            type="submit"
           >
             Create Trigger
           </Button>

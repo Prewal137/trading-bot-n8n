@@ -19,6 +19,7 @@ interface NodeType {
     type: "action" | "trigger";
     kind: NodeKind;
     metadata: NodeMetadata;
+    label?: string;
   };
 }
 
@@ -53,7 +54,6 @@ export function CreateWorkflow() {
       {nodes.length < 6 && (
         <TriggerSheet
           onSelect={(kind, metadata) => {
-            alert("hi there");
 
             setNodes((nodes) => [
               ...nodes,
@@ -63,10 +63,12 @@ export function CreateWorkflow() {
                   type: "trigger",
                   kind,
                   metadata,
+                  label: kind
                 },
-                position: { x: 0, y: 0 },
+                position: { x: 250, y: 200 },
               },
-            ]);
+            ])
+
           }}
         />
       )}
