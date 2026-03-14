@@ -62,11 +62,13 @@ export function CreateWorkflow() {
     (params: any, connectionInfo: any) => {
       if (!connectionInfo.isValid) {
         setSelectAction({
-          startingNodeId: connectionInfo.fromNode.id,
-          position:connectionInfo.fromNode.to
+          startingNodeId: connectionInfo.fromNode?.id,
+          position: connectionInfo.fromNode?.position ? { 
+            x: connectionInfo.fromNode.position.x + 250, 
+            y: connectionInfo.fromNode.position.y 
+          } : { x: 250, y: 250 }
         });
-        console.log(connectionInfo.fromNode.id);
-        console.log(connectionInfo.fromNode.to);
+        console.log("Connect End from:", connectionInfo.fromNode?.id);
       }
     },
     []
@@ -75,7 +77,7 @@ export function CreateWorkflow() {
     <div style={{ width: "100vw", height: "100vh" }}>
 
       {!nodes.length && <TriggerSheet onSelect={(type, metadata) => {
-        setNodes([...nodes, {
+        setNodes((nds) => [...nds, {
           id: Math.random().toString(),
           type,
           data: {
@@ -87,20 +89,21 @@ export function CreateWorkflow() {
       }} />}
       {selectAction && <ActionSheet onSelect={(type, metadata) => {
         const nodeId =Math.random().toString()
-        setNodes([...nodes, {
+        setNodes((nds) => [...nds, {
           id:nodeId,
           type,
           data: {
             kind: "action",
             metadata,
           },
-          position: selectAction.position
+          position: selectAction.position || { x: 250, y: 250 }
         }]);
-        setEdges([...edges, {
+        setEdges((eds) => [...eds, {
           id: `${selectAction.startingNodeId}-${nodeId}`,
           source: selectAction.startingNodeId,
           target: nodeId,
         }]);
+        setSelectAction(null);
       }} />}
 
       <ReactFlow

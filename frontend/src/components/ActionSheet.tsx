@@ -146,7 +146,7 @@ export const ActionSheet = ({
           setOpen(false)
         }}
       >
-        Create Trigger
+        Create Action
       </Button>
     </SheetFooter>
 
