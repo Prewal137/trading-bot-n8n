@@ -18,7 +18,6 @@ import {
   SelectContent,
   SelectGroup,
   SelectItem,
-  SelectLabel,
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select"
@@ -42,18 +41,23 @@ export const TriggerSheet = ({
 }: {
   onSelect: (kind: NodeKind, metadata: NodeMetadata) => void
 }) => {
+
   const [metadata, setMetadata] = useState({})
+  const [selectedTrigger, setSelectedTrigger] = useState<NodeKind>(
+    SUPPORTED_TRIGGERS[0].id as NodeKind
+  )
 
   return (
     <Sheet open={true}>
       <SheetContent>
+
         <SheetHeader>
           <SheetTitle>Select trigger</SheetTitle>
 
           <SheetDescription>
             Select the type of trigger that you need
 
-            <Select>
+            <Select value={selectedTrigger}>
               <SelectTrigger className="w-full">
                 <SelectValue placeholder="Select a fruit" />
               </SelectTrigger>
@@ -61,35 +65,36 @@ export const TriggerSheet = ({
               <SelectContent>
                 <SelectGroup>
 
-                  {SUPPORTED_TRIGGERS.map(({ id, title, description }) => (
-                    <>
-                      <SelectItem
-                        key={id}
-                        value={id}
-                        onSelect={() =>
-                          onSelect(id as NodeKind, metadata)
-                        }
-                      >
-                        {title}
-                      </SelectItem>
-
-                      {/* <SelectLabel>{description}</SelectLabel> */}
-                    </>
+                  {SUPPORTED_TRIGGERS.map(({ id, title }) => (
+                    <SelectItem
+                      key={id}
+                      onSelect={() => setSelectedTrigger(id as NodeKind)}
+                      value={id}
+                    >
+                      {title}
+                    </SelectItem>
                   ))}
 
                 </SelectGroup>
               </SelectContent>
+
             </Select>
 
           </SheetDescription>
+
         </SheetHeader>
 
         <SheetFooter>
-          <Button type="submit">Create Trigger</Button>
 
-          <SheetClose asChild>
-            <Button variant="outline">Close</Button>
-          </SheetClose>
+          <Button
+            onClick={() => {
+              onSelect(selectedTrigger, metadata)
+            }}
+            type="submit"
+          >
+            Create Trigger
+          </Button>
+
         </SheetFooter>
 
       </SheetContent>

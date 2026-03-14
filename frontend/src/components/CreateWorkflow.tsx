@@ -10,16 +10,18 @@ export type NodeKind =
   | "backpack"
   | "lighter";
 
+export type NodeMetadata = any;
+
 interface NodeType {
+  id: string;
+  position: { x: number; y: number };
   data: {
     type: "action" | "trigger";
     kind: NodeKind;
     metadata: NodeMetadata;
   };
-  id: string;
-  position: { x: number; y: number };
 }
-export type NodeMetadata = any;
+
 interface Edge {
   id: string;
   source: string;
@@ -41,30 +43,31 @@ export function CreateWorkflow() {
   );
 
   const onConnect = useCallback(
-    (params: any) => setEdges((eds) => addEdge(params, eds)),
+    (params: any) => setEdges((edgesSnapshot) => addEdge(params, edgesSnapshot)),
     []
   );
 
   return (
     <div style={{ width: "100vw", height: "100vh" }}>
 
-      {!nodes.length && (
+      {nodes.length < 6 && (
         <TriggerSheet
-          onSelect={(kind, metadata) =>
-            setNodes([
+          onSelect={(kind, metadata) => {
+            alert("hi there");
+
+            setNodes((nodes) => [
               ...nodes,
               {
                 id: Math.random().toString(),
                 data: {
-                    type: "trigger",
-                    kind,
-                    metadata
+                  type: "trigger",
+                  kind,
+                  metadata,
                 },
                 position: { x: 0, y: 0 },
-                
               },
-            ])
-          }
+            ]);
+          }}
         />
       )}
 
