@@ -1,5 +1,5 @@
 import { Handle, Position } from "@xyflow/react";
-type TimerNodeMetadata ={
+export type TimerNodeMetadata ={
     time: string;
 };
 
