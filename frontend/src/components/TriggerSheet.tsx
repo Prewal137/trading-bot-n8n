@@ -80,7 +80,13 @@ export const TriggerSheet = ({
       </Select>
 
       {selectedTrigger === "timer-trigger" && <div>
-
+        <div className="pt-4">
+          Number of seconds after which to run the timer
+        </div>
+        <Input value={metadata.time} onChange={(e) => setMetadata((metadata: any) => ({
+          ...metadata,
+          time: Number(e.target.value)
+        }))}></Input>
       </div>}
 
       {selectedTrigger === "price-trigger" && <div className="flex flex-col gap-4">
