@@ -42,59 +42,51 @@ export const TriggerSheet = ({
 
   return (
     <Sheet open={open} onOpenChange={setOpen}>
-      <SheetContent>
+  <SheetContent className="flex flex-col">
 
-        <SheetHeader>
-          <SheetTitle>Select trigger</SheetTitle>
+    <SheetHeader>
+      <SheetTitle>Select trigger</SheetTitle>
+      <SheetDescription>
+        Select the type of trigger that you need
+      </SheetDescription>
+    </SheetHeader>
 
-          <SheetDescription>
-            Select the type of trigger that you need
-          </SheetDescription>
+    <div className="mt-6">
+      <Select
+        value={selectedTrigger}
+        onValueChange={(value) =>
+          setSelectedTrigger(value as NodeKind)
+        }
+      >
+        <SelectTrigger className="w-full">
+          <SelectValue placeholder="Select trigger" />
+        </SelectTrigger>
 
-        </SheetHeader>
+        <SelectContent>
+          <SelectGroup>
+            {SUPPORTED_TRIGGERS.map(({ id, title }) => (
+              <SelectItem key={id} value={id}>
+                {title}
+              </SelectItem>
+            ))}
+          </SelectGroup>
+        </SelectContent>
+      </Select>
+    </div>
 
-        <div className="mt-4">
+    <SheetFooter className="mt-auto">
+      <Button
+        className="w-full"
+        onClick={() => {
+          onSelect(selectedTrigger, metadata)
+          setOpen(false)
+        }}
+      >
+        Create Trigger
+      </Button>
+    </SheetFooter>
 
-          <Select
-            value={selectedTrigger}
-            onValueChange={(value) =>
-              setSelectedTrigger(value as NodeKind)
-            }
-          >
-            <SelectTrigger className="w-full">
-              <SelectValue placeholder="Select trigger" />
-            </SelectTrigger>
-
-            <SelectContent>
-              <SelectGroup>
-
-                {SUPPORTED_TRIGGERS.map(({ id, title }) => (
-                  <SelectItem key={id} value={id}>
-                    {title}
-                  </SelectItem>
-                ))}
-
-              </SelectGroup>
-            </SelectContent>
-
-          </Select>
-
-        </div>
-
-        <SheetFooter className="mt-6">
-
-          <Button
-            onClick={() => {
-              onSelect(selectedTrigger, metadata)
-              setOpen(false)
-            }}
-          >
-            Create Trigger
-          </Button>
-
-        </SheetFooter>
-
-      </SheetContent>
-    </Sheet>
+  </SheetContent>
+</Sheet>
   )
 }
