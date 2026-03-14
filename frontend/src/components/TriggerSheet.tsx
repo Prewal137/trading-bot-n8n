@@ -22,6 +22,7 @@ import {
   SelectValue,
 } from "@/components/ui/select"
 import { Input } from "@/components/ui/input"
+import { Label } from "@/components/ui/label"
 import type { TimerNodeMetadata } from "@/nodes/triggers/Timer"
 import type { PriceTriggerMetadata } from "@/nodes/triggers/PriceTrigger"
 
@@ -56,7 +57,7 @@ export const TriggerSheet = ({
       </SheetDescription>
     </SheetHeader>
 
-    <div className="mt-6 flex flex-col gap-4">
+    <div className="flex flex-col gap-4 py-4 px-4">
       <Select
         value={selectedTrigger}
         onValueChange={(value) =>
@@ -82,29 +83,32 @@ export const TriggerSheet = ({
 
       </div>}
 
-      {selectedTrigger === "price-trigger" && <div>
-        Price:
-        <Input type="text" onChange={(e) => setMetadata((m: any) => ({
-          ...m,
-          price: Number(e.target.value)
-        }))}></Input>
-        Asset
-        <Select value={metadata.asset} onValueChange={(value) => setMetadata((metadata: any) => ({
-          ...metadata,
-          asset: value
-        }))}>
-          <SelectTrigger className="w-full">
-            <SelectValue placeholder="Select an asset" />
-          </SelectTrigger>
-          <SelectContent>
-            <SelectGroup>
-              {SUPPORTED_ASSETS.map((id) => <>
-                <SelectItem key={id} value={id}>{id}</SelectItem>
-                {/* <SelectLabel>{description}</SelectLabel> */}
-              </>)}
-            </SelectGroup>
-          </SelectContent>
-        </Select>
+      {selectedTrigger === "price-trigger" && <div className="flex flex-col gap-4">
+        <div className="grid gap-2">
+          <Label>Price</Label>
+          <Input type="text" onChange={(e) => setMetadata((m: any) => ({
+            ...m,
+            price: Number(e.target.value)
+          }))} />
+        </div>
+        <div className="grid gap-2">
+          <Label>Asset</Label>
+          <Select value={metadata.asset} onValueChange={(value) => setMetadata((metadata: any) => ({
+            ...metadata,
+            asset: value
+          }))}>
+            <SelectTrigger className="w-full">
+              <SelectValue placeholder="Select an asset" />
+            </SelectTrigger>
+            <SelectContent>
+              <SelectGroup>
+                {SUPPORTED_ASSETS.map((id) => <>
+                  <SelectItem key={id} value={id}>{id}</SelectItem>
+                </>)}
+              </SelectGroup>
+            </SelectContent>
+          </Select>
+        </div>
       </div>}
     </div>
 
