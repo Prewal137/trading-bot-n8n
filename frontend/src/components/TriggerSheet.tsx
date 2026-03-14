@@ -21,19 +21,24 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select"
+import { Input } from "@/components/ui/input"
+import type { TimerNodeMetadata } from "@/nodes/triggers/Timer"
+import type { PriceTriggerMetadata } from "@/nodes/triggers/PriceTrigger"
 
 const SUPPORTED_TRIGGERS = [
   { id: "timer-trigger", title: "Timer" },
   { id: "price-trigger", title: "Price Trigger" },
 ]
-
+const SUPPORTED_ASSETS=["SOL","BTC","ETH"];
 export const TriggerSheet = ({
   onSelect,
 }: {
   onSelect: (kind: NodeKind, metadata: NodeMetadata) => void
 }) => {
 
-  const [metadata, setMetadata] = useState({})
+  const [metadata, setMetadata] = useState<TimerNodeMetadata | PriceTriggerMetadata | any>({
+    time : 3600
+  })
   const [open, setOpen] = useState(true)
 
   const [selectedTrigger, setSelectedTrigger] = useState<NodeKind>(
@@ -51,7 +56,7 @@ export const TriggerSheet = ({
       </SheetDescription>
     </SheetHeader>
 
-    <div className="mt-6">
+    <div className="mt-6 flex flex-col gap-4">
       <Select
         value={selectedTrigger}
         onValueChange={(value) =>
@@ -59,7 +64,7 @@ export const TriggerSheet = ({
         }
       >
         <SelectTrigger className="w-full">
-          <SelectValue placeholder="Select trigger" />
+          <SelectValue placeholder="Select a trigger" />
         </SelectTrigger>
 
         <SelectContent>
@@ -72,6 +77,35 @@ export const TriggerSheet = ({
           </SelectGroup>
         </SelectContent>
       </Select>
+
+      {selectedTrigger === "timer-trigger" && <div>
+
+      </div>}
+
+      {selectedTrigger === "price-trigger" && <div>
+        Price:
+        <Input type="text" onChange={(e) => setMetadata((m: any) => ({
+          ...m,
+          price: Number(e.target.value)
+        }))}></Input>
+        Asset
+        <Select value={metadata.asset} onValueChange={(value) => setMetadata((metadata: any) => ({
+          ...metadata,
+          asset: value
+        }))}>
+          <SelectTrigger className="w-full">
+            <SelectValue placeholder="Select an asset" />
+          </SelectTrigger>
+          <SelectContent>
+            <SelectGroup>
+              {SUPPORTED_ASSETS.map((id) => <>
+                <SelectItem key={id} value={id}>{id}</SelectItem>
+                {/* <SelectLabel>{description}</SelectLabel> */}
+              </>)}
+            </SelectGroup>
+          </SelectContent>
+        </Select>
+      </div>}
     </div>
 
     <SheetFooter className="mt-auto">
