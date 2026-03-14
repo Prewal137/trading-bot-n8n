@@ -3,19 +3,21 @@ import { ReactFlow, applyNodeChanges, applyEdgeChanges, addEdge } from "@xyflow/
 import "@xyflow/react/dist/style.css";
 import { TriggerSheet } from './TriggerSheet';
 import { PriceTrigger } from '@/nodes/triggers/PriceTrigger';
+import type { PriceTriggerMetadata } from '@/nodes/triggers/PriceTrigger';
 import { Timer } from '@/nodes/triggers/Timer';
+import type { TimerNodeMetadata as Metadata, TimerNodeMetadata } from '@/nodes/triggers/Timer';
+import type { TradingMetadata } from '@/nodes/actions/Lighter';
 
 const nodeTypes = {
   "price-trigger": PriceTrigger,
   "timer-trigger": Timer
 };
 
-export type NodeMetadata = any;
-export type NodeKind = "price-trigger" | "timer-trigger" | "hyperliquid" | "backpack" | "lighter";
+export type NodeKind = "price-trigger" | "timer" | "hyperliquid" | "backpack" | "lighter";
+
 interface NodeType {
-  type?: NodeKind;
+  type: NodeKind,
   data: {
-    type: NodeKind,
     kind: "action" | "trigger",
     metadata: NodeMetadata,
   },
@@ -23,32 +25,46 @@ interface NodeType {
   position: { x: number, y: number },
 }
 
+export type NodeMetadata = TradingMetadata | PriceTriggerMetadata | TimerNodeMetadata;
 interface Edge {
-  id: string;
-  source: string;
-  target: string;
+  id: string,
+  source: string,
+  target: string,
 }
 
 
 export function CreateWorkflow() {
   const [nodes, setNodes] = useState<NodeType[]>([]);
   const [edges, setEdges] = useState<Edge[]>([]);
-
+  const [selectAction, setSelectAction] = useState<{
+    position: {
+      x: number;
+      y: number;
+    };
+  } | null>(null);
   const onNodesChange = useCallback(
-    (changes: any) => setNodes((nds) => applyNodeChanges(changes, nds)),
-    []
+    (changes: any) => setNodes((nodesSnapshot) => applyNodeChanges(changes, nodesSnapshot)),
+    [],
   );
 
   const onEdgesChange = useCallback(
-    (changes: any) => setEdges((eds) => applyEdgeChanges(changes, eds)),
-    []
+    (changes: any) => setEdges((edgesSnapshot) => applyEdgeChanges(changes, edgesSnapshot)),
+    [],
   );
 
   const onConnect = useCallback(
     (params: any) => setEdges((edgesSnapshot) => addEdge(params, edgesSnapshot)),
     []
   );
-
+  const onConnectEnd = useCallback(
+    (params: any, connectionInfo: any) => {
+      if (!connectionInfo.isValid) {
+        console.log(connectionInfo.fromNode.id);
+        console.log(connectionInfo.fromNode.to);
+      }
+    },
+    []
+  );
   return (
     <div style={{ width: "100vw", height: "100vh" }}>
 
@@ -82,6 +98,7 @@ export function CreateWorkflow() {
         onNodesChange={onNodesChange}
         onEdgesChange={onEdgesChange}
         onConnect={onConnect}
+        onConnectEnd={onConnectEnd}
         fitView
       />
 

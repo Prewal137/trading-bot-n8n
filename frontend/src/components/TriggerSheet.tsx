@@ -30,7 +30,7 @@ const SUPPORTED_TRIGGERS = [
   { id: "timer-trigger", title: "Timer" },
   { id: "price-trigger", title: "Price Trigger" },
 ]
-const SUPPORTED_ASSETS=["SOL","BTC","ETH"];
+export const SUPPORTED_ASSETS=["SOL","BTC","ETH"];
 export const TriggerSheet = ({
   onSelect,
 }: {
@@ -108,9 +108,9 @@ export const TriggerSheet = ({
             </SelectTrigger>
             <SelectContent>
               <SelectGroup>
-                {SUPPORTED_ASSETS.map((id) => <>
+                {SUPPORTED_ASSETS.map((id) => (
                   <SelectItem key={id} value={id}>{id}</SelectItem>
-                </>)}
+                ))}
               </SelectGroup>
             </SelectContent>
           </Select>
