@@ -1,26 +1,26 @@
 import { useState, useCallback } from "react";
 import { ReactFlow, applyNodeChanges, applyEdgeChanges, addEdge } from "@xyflow/react";
 import "@xyflow/react/dist/style.css";
-import { TriggerSheet } from "./TriggerSheet";
+import { TriggerSheet } from './TriggerSheet';
+import { PriceTrigger } from '@/nodes/triggers/PriceTrigger';
+import { Timer } from '@/nodes/triggers/Timer';
 
-export type NodeKind =
-  | "price-trigger"
-  | "timer-trigger"
-  | "hyperliquid"
-  | "backpack"
-  | "lighter";
+const nodeTypes = {
+  "price-trigger": PriceTrigger,
+  "timer-trigger": Timer
+};
 
 export type NodeMetadata = any;
-
+export type NodeKind = "price-trigger" | "timer-trigger" | "hyperliquid" | "backpack" | "lighter";
 interface NodeType {
-  id: string;
-  position: { x: number; y: number };
+  type?: NodeKind;
   data: {
-    type: "action" | "trigger";
-    kind: NodeKind;
-    metadata: NodeMetadata;
-    label?: string;
-  };
+    type: NodeKind,
+    kind: "action" | "trigger",
+    metadata: NodeMetadata,
+  },
+  id: string,
+  position: { x: number, y: number },
 }
 
 interface Edge {
@@ -28,6 +28,7 @@ interface Edge {
   source: string;
   target: string;
 }
+
 
 export function CreateWorkflow() {
   const [nodes, setNodes] = useState<NodeType[]>([]);
@@ -53,17 +54,18 @@ export function CreateWorkflow() {
 
       {nodes.length < 6 && (
         <TriggerSheet
-          onSelect={(kind, metadata) => {
+          onSelect={(type, metadata) => {
 
             setNodes((nodes) => [
               ...nodes,
               {
                 id: Math.random().toString(),
+                type: type,
                 data: {
-                  type: "trigger",
-                  kind,
+                  kind: "trigger",
+                  type,
                   metadata,
-                  label: kind
+                  
                 },
                 position: { x: 250, y: 200 },
               },
@@ -76,6 +78,7 @@ export function CreateWorkflow() {
       <ReactFlow
         nodes={nodes}
         edges={edges}
+        nodeTypes={nodeTypes}
         onNodesChange={onNodesChange}
         onEdgesChange={onEdgesChange}
         onConnect={onConnect}
