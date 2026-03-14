@@ -2,6 +2,7 @@ import { useState, useCallback } from "react";
 import { ReactFlow, applyNodeChanges, applyEdgeChanges, addEdge } from "@xyflow/react";
 import "@xyflow/react/dist/style.css";
 import { TriggerSheet } from './TriggerSheet';
+import { ActionSheet } from './ActionSheet';
 import { PriceTrigger } from '@/nodes/triggers/PriceTrigger';
 import type { PriceTriggerMetadata } from '@/nodes/triggers/PriceTrigger';
 import { Timer } from '@/nodes/triggers/Timer';
@@ -41,6 +42,7 @@ export function CreateWorkflow() {
       x: number;
       y: number;
     };
+    startingNodeId: string,
   } | null>(null);
   const onNodesChange = useCallback(
     (changes: any) => setNodes((nodesSnapshot) => applyNodeChanges(changes, nodesSnapshot)),
@@ -59,6 +61,10 @@ export function CreateWorkflow() {
   const onConnectEnd = useCallback(
     (params: any, connectionInfo: any) => {
       if (!connectionInfo.isValid) {
+        setSelectAction({
+          startingNodeId: connectionInfo.fromNode.id,
+          position:connectionInfo.fromNode.to
+        });
         console.log(connectionInfo.fromNode.id);
         console.log(connectionInfo.fromNode.to);
       }
@@ -68,28 +74,34 @@ export function CreateWorkflow() {
   return (
     <div style={{ width: "100vw", height: "100vh" }}>
 
-      {nodes.length < 6 && (
-        <TriggerSheet
-          onSelect={(type, metadata) => {
-
-            setNodes((nodes) => [
-              ...nodes,
-              {
-                id: Math.random().toString(),
-                type: type,
-                data: {
-                  kind: "trigger",
-                  type,
-                  metadata,
-                  
-                },
-                position: { x: 250, y: 200 },
-              },
-            ])
-
-          }}
-        />
-      )}
+      {!nodes.length && <TriggerSheet onSelect={(type, metadata) => {
+        setNodes([...nodes, {
+          id: Math.random().toString(),
+          type,
+          data: {
+            kind: "trigger",
+            metadata,
+          },
+          position: {x: 0, y: 0},
+        }])
+      }} />}
+      {selectAction && <ActionSheet onSelect={(type, metadata) => {
+        const nodeId =Math.random().toString()
+        setNodes([...nodes, {
+          id:nodeId,
+          type,
+          data: {
+            kind: "action",
+            metadata,
+          },
+          position: selectAction.position
+        }]);
+        setEdges([...edges, {
+          id: `${selectAction.startingNodeId}-${nodeId}`,
+          source: selectAction.startingNodeId,
+          target: nodeId,
+        }]);
+      }} />}
 
       <ReactFlow
         nodes={nodes}

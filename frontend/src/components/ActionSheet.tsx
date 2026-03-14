@@ -43,7 +43,7 @@ const SUPPORTED_ACTIONS = [{
 
 const SUPPORTED_ASSETS = ["SOL", "BTC", "ETH"];
 
-export const TriggerSheet = ({
+export const ActionSheet = ({
   onSelect
 }: {
   onSelect: (kind: NodeKind, metadata: NodeMetadata) => void
@@ -61,9 +61,9 @@ export const TriggerSheet = ({
   <SheetContent className="flex flex-col">
 
     <SheetHeader>
-      <SheetTitle>Select trigger</SheetTitle>
+      <SheetTitle>Select action</SheetTitle>
       <SheetDescription>
-        Select the type of trigger that you need
+        Select the type of action that you need
       </SheetDescription>
     </SheetHeader>
 
