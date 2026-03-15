@@ -8,11 +8,15 @@ import type { PriceTriggerMetadata } from '@/nodes/triggers/PriceTrigger';
 import { Timer } from '@/nodes/triggers/Timer';
 import type { TimerNodeMetadata as Metadata, TimerNodeMetadata } from '@/nodes/triggers/Timer';
 import { Lighter, type TradingMetadata } from '@/nodes/actions/Lighter';
+import { Backpack } from '@/nodes/actions/Backpack';
+import { Hyperliquid } from '@/nodes/actions/Hyperliquid';
 
 const nodeTypes = {
   "price-trigger": PriceTrigger,
   "timer-trigger": Timer,
-  "Lighter": Lighter
+  "Lighter": Lighter,
+  "backpack": Backpack,
+  "hyperliquid": Hyperliquid
 };
 
 export type NodeKind = "price-trigger" | "timer" | "hyperliquid" | "backpack" | "lighter";
