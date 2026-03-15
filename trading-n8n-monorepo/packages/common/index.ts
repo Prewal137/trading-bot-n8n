@@ -1,0 +1,8 @@
+export type NodeKind =
+  | "price-trigger"
+  | "timer-trigger"
+  | "hyperliquid"
+  | "backpack"
+  | "lighter";
+
+export type NodeMetadata = Record<string, any>;
