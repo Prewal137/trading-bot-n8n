@@ -1,5 +1,5 @@
 import { useState, useCallback } from "react";
-import { ReactFlow, applyNodeChanges, applyEdgeChanges, addEdge } from "@xyflow/react";
+import { ReactFlow, applyNodeChanges, applyEdgeChanges, addEdge, Background, Controls } from "@xyflow/react";
 import "@xyflow/react/dist/style.css";
 import { TriggerSheet } from './TriggerSheet';
 import { ActionSheet } from './ActionSheet';
@@ -120,7 +120,10 @@ export function CreateWorkflow() {
         onConnect={onConnect}
         onConnectEnd={onConnectEnd}
         fitView
-      />
+      >
+        <Background variant="dots" gap={12} size={1} />
+        <Controls />
+      </ReactFlow>
 
     </div>
   );

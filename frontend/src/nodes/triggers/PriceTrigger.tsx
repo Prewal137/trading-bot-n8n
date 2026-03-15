@@ -12,19 +12,29 @@ export function PriceTrigger({ data, isConnectable }: {
   isConnectable: boolean;
 }) {
   return (
-    <div className="bg-white border rounded-md shadow-sm min-w-[150px] text-sm">
-      <div className="px-3 py-2 border-b bg-gray-50 font-semibold rounded-t-md text-gray-800">
-        Price Trigger
-      </div>
-      <div className="p-3 flex flex-col gap-1">
-        <div className="text-gray-600">
-          Asset: <span className="font-medium text-gray-900">{data.metadata.asset}</span>
-        </div>
-        <div className="text-gray-600">
-          Price: <span className="font-medium text-gray-900">{data.metadata.price}</span>
+    <div className="bg-white/80 backdrop-blur-xl border border-white/20 shadow-xl rounded-2xl min-w-[200px] text-sm overflow-hidden transition-all hover:shadow-2xl">
+      <div className="px-4 py-3 bg-gradient-to-r from-blue-500/10 to-indigo-500/10 border-b border-indigo-100/50">
+        <div className="font-semibold text-indigo-900 flex items-center gap-2">
+          <div className="w-2 h-2 rounded-full bg-indigo-500 shadow-[0_0_8px_rgba(99,102,241,0.5)]"></div>
+          Price Trigger
         </div>
       </div>
-      <Handle type="source" position={Position.Right} isConnectable={isConnectable} />
+      <div className="p-4 flex flex-col gap-2 bg-white/40">
+        <div className="flex justify-between items-center text-gray-600">
+          <span>Asset</span>
+          <span className="font-bold text-gray-900 bg-indigo-50 px-2 py-0.5 rounded-md">{data.metadata.asset}</span>
+        </div>
+        <div className="flex justify-between items-center text-gray-600">
+          <span>Price</span>
+          <span className="font-bold text-gray-900 bg-indigo-50 px-2 py-0.5 rounded-md">${data.metadata.price}</span>
+        </div>
+      </div>
+      <Handle 
+        type="source" 
+        position={Position.Right} 
+        isConnectable={isConnectable} 
+        className="w-3 h-3 bg-indigo-500 border-2 border-white shadow-sm"
+      />
     </div>
   );
 }
