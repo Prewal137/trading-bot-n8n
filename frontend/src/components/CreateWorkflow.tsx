@@ -14,7 +14,7 @@ import { Hyperliquid } from '@/nodes/actions/Hyperliquid';
 const nodeTypes = {
   "price-trigger": PriceTrigger,
   "timer-trigger": Timer,
-  "Lighter": Lighter,
+  "lighter": Lighter,
   "backpack": Backpack,
   "hyperliquid": Hyperliquid
 };
