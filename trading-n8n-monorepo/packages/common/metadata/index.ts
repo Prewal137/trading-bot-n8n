@@ -6,3 +6,11 @@ export type TradingMetadata = {
   qty: number;
   symbol: typeof SUPPORTED_ASSETS;
 };
+
+export type TimerNodeMetadata = {
+  time: number;
+};
+export type PriceTriggerMetadata = {
+  asset: string;
+  price: number;
+};
