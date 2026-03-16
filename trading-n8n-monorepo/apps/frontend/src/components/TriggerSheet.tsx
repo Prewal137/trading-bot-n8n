@@ -35,11 +35,20 @@ const SUPPORTED_TRIGGERS = [
 
 export const TriggerSheet = ({
   onSelect,
+  onClose
 }: {
-  onSelect: (kind: NodeKind, metadata: NodeMetadata) => void
+  onSelect: (kind: NodeKind, metadata: NodeMetadata) => void;
+  onClose?: () => void;
 }) => {
 
   const [open, setOpen] = useState(true)
+
+  const handleOpenChange = (newOpen: boolean) => {
+    setOpen(newOpen)
+    if (!newOpen) {
+      onClose?.()
+    }
+  }
 
   const [selectedTrigger, setSelectedTrigger] = useState<NodeKind>("timer-trigger")
 
@@ -65,7 +74,7 @@ export const TriggerSheet = ({
   }
 
   return (
-    <Sheet open={open} onOpenChange={setOpen}>
+    <Sheet open={open} onOpenChange={handleOpenChange}>
       <SheetContent className="flex flex-col">
 
         <SheetHeader>

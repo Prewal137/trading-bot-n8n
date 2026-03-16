@@ -3,6 +3,7 @@ import { ReactFlow, applyNodeChanges, applyEdgeChanges, addEdge, Background, Con
 import "@xyflow/react/dist/style.css";
 import { TriggerSheet } from './TriggerSheet';
 import { ActionSheet } from './ActionSheet';
+import { Button } from "@/components/ui/button";
 import { PriceTrigger } from '@/nodes/triggers/PriceTrigger';
 
 import { Timer } from '@/nodes/triggers/Timer';
@@ -79,38 +80,55 @@ export function CreateWorkflow() {
     },
     []
   );
+  const [showTriggerSheet, setShowTriggerSheet] = useState(true);
+
   return (
     <div style={{ width: "100vw", height: "100vh" }}>
 
-      {!nodes.length && <TriggerSheet onSelect={(type, metadata) => {
-        setNodes((nds) => [...nds, {
-          id: Math.random().toString(),
-          type,
-          data: {
-            kind: "trigger",
-            metadata,
-          },
-          position: { x: 0, y: 0 },
-        }])
-      }} />}
-      {selectAction && <ActionSheet onSelect={(type, metadata) => {
-        const nodeId = Math.random().toString()
-        setNodes((nds) => [...nds, {
-          id: nodeId,
-          type,
-          data: {
-            kind: "action",
-            metadata,
-          },
-          position: selectAction.position || { x: 250, y: 250 }
-        }]);
-        setEdges((eds) => [...eds, {
-          id: `${selectAction.startingNodeId}-${nodeId}`,
-          source: selectAction.startingNodeId,
-          target: nodeId,
-        }]);
-        setSelectAction(null);
-      }} />}
+      {(!nodes.length && showTriggerSheet) && <TriggerSheet 
+        onSelect={(type, metadata) => {
+          setNodes((nds) => [...nds, {
+            id: Math.random().toString(),
+            type,
+            data: {
+              kind: "trigger",
+              metadata,
+            },
+            position: { x: 0, y: 0 },
+          }]);
+          setShowTriggerSheet(false);
+        }} 
+        onClose={() => setShowTriggerSheet(false)}
+      />}
+      {selectAction && <ActionSheet 
+        onSelect={(type, metadata) => {
+          const nodeId = Math.random().toString()
+          setNodes((nds) => [...nds, {
+            id: nodeId,
+            type,
+            data: {
+              kind: "action",
+              metadata,
+            },
+            position: selectAction.position || { x: 250, y: 250 }
+          }]);
+          setEdges((eds) => [...eds, {
+            id: `${selectAction.startingNodeId}-${nodeId}`,
+            source: selectAction.startingNodeId,
+            target: nodeId,
+          }]);
+          setSelectAction(null);
+        }} 
+        onClose={() => setSelectAction(null)}
+      />}
+
+      {!nodes.length && !showTriggerSheet && (
+        <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 z-10">
+          <Button onClick={() => setShowTriggerSheet(true)} size="lg" className="shadow-2xl hover:scale-105 transition-transform">
+            Add Trigger to Start
+          </Button>
+        </div>
+      )}
 
       <ReactFlow
         nodes={nodes}

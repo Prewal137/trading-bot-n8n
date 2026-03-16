@@ -42,20 +42,29 @@ const SUPPORTED_ACTIONS = [{
 const SUPPORTED_ASSETS = ["SOL", "BTC", "ETH"];
 
 export const ActionSheet = ({
-  onSelect
+  onSelect,
+  onClose
 }: {
-  onSelect: (kind: NodeKind, metadata: NodeMetadata) => void
+  onSelect: (kind: NodeKind, metadata: NodeMetadata) => void;
+  onClose?: () => void;
 }) => {
 
   const [metadata, setMetadata] = useState<TradingMetadata | any>({});
   const [open, setOpen] = useState(true)
+
+  const handleOpenChange = (newOpen: boolean) => {
+    setOpen(newOpen)
+    if (!newOpen) {
+      onClose?.()
+    }
+  }
 
   const [selectedAction, setSelectedAction] = useState(
     SUPPORTED_ACTIONS[0].id
   )
 
   return (
-    <Sheet open={open} onOpenChange={setOpen}>
+    <Sheet open={open} onOpenChange={handleOpenChange}>
   <SheetContent className="flex flex-col">
 
     <SheetHeader>
