@@ -1,15 +1,38 @@
+
 import express from "express";
-import cors from "cors";
 
 const app = express();
-app.use(cors());
 
-app.get("/", (req, res) => {
-  res.json({
-    message: "Backend running"
-  });
-});
+app.post("/signup", (req, res) => {
 
-app.listen(3001, () => {
-  console.log("Server running on port 3001");
-});
+})
+
+app.post("/signin", (req, res) => {
+
+})
+
+app.post("/workflow", (req, res) => {
+
+})
+
+app.put("/workflow", (req, res) => {
+
+})
+
+app.get("/workflow/:workflowId", (req, res) => {
+
+})
+
+app.get("/workflow/executions/:workflowId", (req, res) => {
+
+})
+
+app.post("/credentials", (req, res) => {
+
+})
+
+app.get("/credentials", (req, res) => {
+
+})
+
+app.listen(process.env.PORT || 3000);
