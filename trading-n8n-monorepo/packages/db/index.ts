@@ -38,21 +38,26 @@ const PositionSchema = new Schema({
 },{
     _id: false
 })
+const NodeDataSchema = new Schema({
+    kind: {
+        type: String,enum:["ACTION","TRIGGER"]
+    },
+    metadata: Schema.Types.Mixed
+},{
+    _id : false
+})
 const NodesSchema = new Schema({
     id:{
         type:String,
         required:true,
     },
     position:PositionSchema,
+    credentials:Schema.Types.Mixed,
     type: {
         type : mongoose.Types.ObjectId,
         ref:'Nodes'
     },
-    data:{
-        kind: String,
-        enum:["ACTION","TRIGGER"],
-        metadata: Schema.Types.Mixed
-    }
+    data:NodeDataSchema
 },{
     _id: false
 
@@ -64,7 +69,14 @@ const WorkflowSchema = new Schema({
         required: true,
         ref: "Users"
     },
-    nodes:[],
+    nodes:[NodesSchema],
     edges:[EdgesSchema]
 })
+const NodesSchema = new Schema({
+    title:{
+        type:String,
+        required:true
+    }
+})
 export  const UserModel = monogoose.model("User",UserSchema)
+export const WorkflowModel = mongoose.model("Workflows",WorkflowSchema);
