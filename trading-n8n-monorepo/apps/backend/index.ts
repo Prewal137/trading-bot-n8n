@@ -1,9 +1,14 @@
 
 import express from "express";
-
+import mongoose from "mongoose";
+import { UserModel } from "db/client";
+mongoose.connect(process.env.MONGO_URL!)
 const app = express();
 
 app.post("/signup", (req, res) => {
+  UserModel.create({
+
+  })
 
 })
 
@@ -35,7 +40,7 @@ app.get("/credentials", (req, res) => {
 
 })
 app.get("/nodes",(req,res)=>{
-  
+
 })
 
 app.listen(process.env.PORT || 3000);
