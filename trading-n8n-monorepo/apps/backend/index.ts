@@ -34,5 +34,8 @@ app.post("/credentials", (req, res) => {
 app.get("/credentials", (req, res) => {
 
 })
+app.get("/nodes",(req,res)=>{
+  
+})
 
 app.listen(process.env.PORT || 3000);
