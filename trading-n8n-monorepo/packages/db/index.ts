@@ -8,13 +8,31 @@ const UserSchema = new Schema({
         type:String,
         required:true
     }
+});
+const EdgesSchema = new Schema({
+    id: {
+        type: String,
+        required: true
+    },
+    source: {
+        type: String,
+        required: true
+    },
+    target: {
+        type: String,
+        required: true
+    }
+}, {
+    _id: false
 })
 
 const WorkflowSchema = new Schema({
     userId : {
         type: mongoose.Types.ObjectId,
         required: true,
-        
-    }
+        ref: "User"
+    },
+    nodes:[],
+    edges:[]
 })
 export  const UserModel = monogoose.model("User",UserSchema)
