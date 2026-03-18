@@ -12,5 +12,8 @@
     "lint": "eslint .",
     "check-types": "tsc --noEmit"
   },
-  "license": "ISC"
+  "license": "ISC",
+  "dependencies": {
+    "zod": "^4.3.6"
+  }
 }
