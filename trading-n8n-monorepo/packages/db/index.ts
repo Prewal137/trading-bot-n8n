@@ -46,7 +46,7 @@ const NodeDataSchema = new Schema({
 },{
     _id : false
 })
-const NodesSchema = new Schema({
+const WorkflowNodesSchema = new Schema({
     id:{
         type:String,
         required:true,
@@ -69,14 +69,55 @@ const WorkflowSchema = new Schema({
         required: true,
         ref: "Users"
     },
-    nodes:[NodesSchema],
+    nodes:[WorkflowNodesSchema],
     edges:[EdgesSchema]
 })
+const CredentialsTypeSchema = new Schema({
+    title:{
+        type:String,
+        required:true
+    },
+    type:{
+        type:String,
+        required:true,
+       
+    },
+    required:{
+        type:Boolean,
+        required:true
+    },
+    
+})
+
 const NodesSchema = new Schema({
     title:{
         type:String,
         required:true
-    }
+    },
+    type:{
+        type:String,
+        enum: ["ACTION","TRIGGER"],
+        required:true
+    },
+    credentialsType: CredentialsTypeSchema
 })
-export  const UserModel = monogoose.model("User",UserSchema)
+
+const ExecutionSchema = new Schema({
+    workflowId:{
+        type:mongoose.Types.ObjectId,
+        required:true,
+        ref:'Workflows',
+    },
+    status:{
+        type:String,
+        enum:["SUCCESS","FAILED","PENDING"],
+        required:true
+    },
+    startTime:{
+        
+    }
+    
+})
+export  const UserModel = mongoose.model("User",UserSchema)
 export const WorkflowModel = mongoose.model("Workflows",WorkflowSchema);
+export const NodesModel = mongoose.model("Nodes",NodesSchema);
