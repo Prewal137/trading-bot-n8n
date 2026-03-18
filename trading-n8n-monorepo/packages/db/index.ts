@@ -114,10 +114,18 @@ const ExecutionSchema = new Schema({
         required:true
     },
     startTime:{
-        
+        type:Date,
+        default:Date.now(),
+        required:true
+    },
+    endTime:{
+        type:Date,
+        default:Date.now(),
+        required:true
     }
     
 })
 export  const UserModel = mongoose.model("User",UserSchema)
 export const WorkflowModel = mongoose.model("Workflows",WorkflowSchema);
 export const NodesModel = mongoose.model("Nodes",NodesSchema);
+export const ExecutionModel = mongoose.model("Executions",ExecutionSchema);
