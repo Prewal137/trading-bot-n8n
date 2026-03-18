@@ -25,6 +25,15 @@ const EdgesSchema = new Schema({
 }, {
     _id: false
 })
+const NodesSchema = new Schema({
+    type: {
+        type : mongoose.Types.ObjectId,
+        ref:'Nodes'
+    }
+},{
+    _id: false
+
+})
 
 const WorkflowSchema = new Schema({
     userId : {
@@ -33,6 +42,6 @@ const WorkflowSchema = new Schema({
         ref: "User"
     },
     nodes:[],
-    edges:[]
+    edges:[EdgesSchema]
 })
 export  const UserModel = monogoose.model("User",UserSchema)
