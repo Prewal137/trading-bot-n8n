@@ -25,10 +25,33 @@ const EdgesSchema = new Schema({
 }, {
     _id: false
 })
+const PositionSchema = new Schema({
+    x:{
+        type: String,
+        required: true
+    },
+    y:{
+        type: String,
+        required: true
+    }
+
+},{
+    _id: false
+})
 const NodesSchema = new Schema({
+    id:{
+        type:String,
+        required:true,
+    },
+    position:PositionSchema,
     type: {
         type : mongoose.Types.ObjectId,
         ref:'Nodes'
+    },
+    data:{
+        kind: String,
+        enum:["ACTION","TRIGGER"],
+        metadata: Schema.Types.Mixed
     }
 },{
     _id: false
@@ -39,7 +62,7 @@ const WorkflowSchema = new Schema({
     userId : {
         type: mongoose.Types.ObjectId,
         required: true,
-        ref: "User"
+        ref: "Users"
     },
     nodes:[],
     edges:[EdgesSchema]
