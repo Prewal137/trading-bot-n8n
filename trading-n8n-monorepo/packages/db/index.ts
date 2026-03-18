@@ -27,11 +27,11 @@ const EdgesSchema = new Schema({
 })
 const PositionSchema = new Schema({
     x:{
-        type: String,
+        type: Number,
         required: true
     },
     y:{
-        type: String,
+        type: Number,
         required: true
     }
 
@@ -53,7 +53,7 @@ const WorkflowNodesSchema = new Schema({
     },
     position:PositionSchema,
     credentials:Schema.Types.Mixed,
-    type: {
+    nodeId: {
         type : mongoose.Types.ObjectId,
         ref:'Nodes'
     },
@@ -99,7 +99,7 @@ const NodesSchema = new Schema({
         enum: ["ACTION","TRIGGER"],
         required:true
     },
-    credentialsType: CredentialsTypeSchema
+    credentialsType: [CredentialsTypeSchema]
 })
 
 const ExecutionSchema = new Schema({
