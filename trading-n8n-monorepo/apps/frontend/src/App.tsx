@@ -1,5 +1,4 @@
-import React from "react";
-import { BrowserRouter, Routes, Route, Link, useNavigate } from "react-router-dom";
+import { BrowserRouter, Routes, Route, Link, useNavigate, Navigate } from "react-router-dom";
 import Landing from "@/pages/Landing";
 import Auth from "@/pages/Auth";
 import Dashboard from "@/pages/Dashboard";
@@ -9,6 +8,15 @@ import WorkflowExecutions from "@/pages/WorkflowExecutions";
 import { Button } from "@/components/ui/button";
 import { removeAuthToken, getAuthToken } from "@/lib/api";
 import { LayoutDashboard } from "lucide-react";
+
+// Auth Guard Component
+function ProtectedRoute({ children }: { children: React.ReactNode }) {
+  const token = getAuthToken();
+  if (!token) {
+    return <Navigate to="/auth" replace />;
+  }
+  return <>{children}</>;
+}
 
 function Navigation() {
   const navigate = useNavigate();
@@ -47,13 +55,13 @@ function Navigation() {
                 removeAuthToken();
                 navigate("/auth");
               }}
-              className="text-muted-foreground hover:text-destructive"
+              className="text-muted-foreground hover:text-destructive transition-colors"
             >
               Logout
             </Button>
           ) : (
             location !== "/auth" && (
-              <Button size="sm" onClick={() => navigate("/auth")}>
+              <Button size="sm" onClick={() => navigate("/auth")} className="rounded-full px-6">
                 Sign In
               </Button>
             )
@@ -73,15 +81,18 @@ function App() {
           <Routes>
             <Route path="/" element={<Landing />} />
             <Route path="/auth" element={<Auth />} />
-            <Route path="/dashboard" element={<Dashboard />} />
-            <Route path="/createworkflow" element={<CreateWorkflow />} />
-            <Route path="/workflow/:workflowId" element={<WorkflowDetail />} />
-            <Route path="/workflow/:workflowId/executions" element={<WorkflowExecutions />} />
+            
+            {/* Protected Routes */}
+            <Route path="/dashboard" element={<ProtectedRoute><Dashboard /></ProtectedRoute>} />
+            <Route path="/createworkflow" element={<ProtectedRoute><CreateWorkflow /></ProtectedRoute>} />
+            <Route path="/workflow/:workflowId" element={<ProtectedRoute><WorkflowDetail /></ProtectedRoute>} />
+            <Route path="/workflow/:workflowId/executions" element={<ProtectedRoute><WorkflowExecutions /></ProtectedRoute>} />
           </Routes>
         </main>
       </BrowserRouter>
     </div>
   );
 }
+
 
 export default App;
