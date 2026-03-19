@@ -3,7 +3,7 @@ dotenv.config();
 import express from "express";
 import mongoose from "mongoose";
 import { UserModel } from "@repo/db/client";
-import { SignupSchema } from "@repo/common/types";
+import { SignupSchema,SigninSchema } from "@repo/common/types";
 
 const app = express();
 app.use(express.json());
@@ -32,7 +32,34 @@ app.post("/signup", async (req, res) => {
   }
 });
 
-app.post("/signin", (req, res) => {
+app.post("/signin", async (req, res) => {
+  const { success, data } = SigninSchema.safeParse(req.body);
+  if (!success) {
+    res.status(403).json({
+      message: "Incorrect inputs"
+    });
+    return;
+  }
+  try {
+    const user = await UserModel.findOne({
+      username: data.username,
+      password: data.password
+    })
+    if (user) {
+      // return the user their jwt/token;
+      res.json({
+        id: user._id
+      })
+    } else {
+      res.status(403).json({
+        message: "Incorrect credentials"
+      })
+    }
+  } catch (e) {
+    res.status(500).json({
+      message: "Internal server error"
+    });
+  }
 
 });
 
