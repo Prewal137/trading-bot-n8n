@@ -69,8 +69,8 @@ app.post("/signin", async (req: Request, res: Response) => {
 });
 
 app.post("/workflow", authMiddleware, (req, res) => {
-  const userId = req.userId;
-  
+  const userId = req.userId!;
+
 
 });
 
