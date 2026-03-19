@@ -86,21 +86,21 @@ export const TriggerSheet = ({
           </SheetDescription>
         </SheetHeader>
 
-        <div className="flex flex-col gap-6 py-6 px-1">
-          <div className="space-y-2">
-            <Label className="text-sm font-medium text-muted-foreground">Trigger type</Label>
+        <div className="flex flex-col gap-8 py-8 px-2">
+          <div className="space-y-3">
+            <Label className="text-sm font-semibold text-muted-foreground/80">Trigger type</Label>
             <Select
               value={selectedTrigger}
               onValueChange={(value) => handleTriggerChange(value as NodeKind)}
             >
-              <SelectTrigger className="w-full h-12 rounded-xl border-secondary bg-secondary/20">
+              <SelectTrigger className="w-full h-14 rounded-2xl border-secondary bg-secondary/10 px-4 text-base">
                 <SelectValue placeholder="Select a trigger" />
               </SelectTrigger>
 
-              <SelectContent className="rounded-xl">
+              <SelectContent className="rounded-2xl">
                 <SelectGroup>
                   {SUPPORTED_TRIGGERS.map(({ id, title }) => (
-                    <SelectItem key={id} value={id}>
+                    <SelectItem key={id} value={id} className="rounded-xl py-3">
                       {title}
                     </SelectItem>
                   ))}
@@ -110,12 +110,12 @@ export const TriggerSheet = ({
           </div>
 
           {selectedTrigger === "timer" && (
-            <div className="space-y-2 animate-in fade-in slide-in-from-top-2 duration-300">
-              <Label className="text-sm font-medium text-muted-foreground lowercase">time</Label>
+            <div className="space-y-3 animate-in fade-in slide-in-from-top-2 duration-300">
+              <Label className="text-sm font-semibold text-muted-foreground/80 lowercase">time</Label>
               <Input
                 type="number"
                 placeholder="Enter time in seconds"
-                className="h-12 rounded-xl border-secondary bg-secondary/20"
+                className="h-14 rounded-2xl border-secondary bg-secondary/10 px-4 text-base"
                 value={(metadata as TimerNodeMetadata).time}
                 onChange={(e) =>
                   setMetadata({
@@ -128,13 +128,13 @@ export const TriggerSheet = ({
           )}
 
           {selectedTrigger === "price-trigger" && (
-            <div className="flex flex-col gap-6 animate-in fade-in slide-in-from-top-2 duration-300">
-              <div className="space-y-2">
-                <Label className="text-sm font-medium text-muted-foreground lowercase">price</Label>
+            <div className="flex flex-col gap-8 animate-in fade-in slide-in-from-top-2 duration-300">
+              <div className="space-y-3">
+                <Label className="text-sm font-semibold text-muted-foreground/80 lowercase">price</Label>
                 <Input
                   type="number"
                   placeholder="Target price"
-                  className="h-12 rounded-xl border-secondary bg-secondary/20"
+                  className="h-14 rounded-2xl border-secondary bg-secondary/10 px-4 text-base"
                   value={(metadata as PriceTriggerMetadata).price ?? ""}
                   onChange={(e) =>
                     setMetadata({
@@ -145,8 +145,8 @@ export const TriggerSheet = ({
                 />
               </div>
 
-              <div className="space-y-2">
-                <Label className="text-sm font-medium text-muted-foreground lowercase">Asset</Label>
+              <div className="space-y-3">
+                <Label className="text-sm font-semibold text-muted-foreground/80 uppercase">Asset</Label>
                 <Select
                   value={(metadata as PriceTriggerMetadata).asset ?? "SOL"}
                   onValueChange={(value) =>
@@ -156,14 +156,14 @@ export const TriggerSheet = ({
                     })
                   }
                 >
-                  <SelectTrigger className="w-full h-12 rounded-xl border-secondary bg-secondary/20">
+                  <SelectTrigger className="w-full h-14 rounded-2xl border-secondary bg-secondary/10 px-4 text-base">
                     <SelectValue placeholder="Select an asset" />
                   </SelectTrigger>
 
-                  <SelectContent className="rounded-xl">
+                  <SelectContent className="rounded-2xl">
                     <SelectGroup>
                       {SUPPORTED_ASSETS.map((id) => (
-                        <SelectItem key={id} value={id}>
+                        <SelectItem key={id} value={id} className="rounded-xl py-3">
                           {id}
                         </SelectItem>
                       ))}
@@ -175,9 +175,9 @@ export const TriggerSheet = ({
           )}
         </div>
 
-        <SheetFooter className="mt-auto pt-6">
+        <SheetFooter className="mt-auto pt-10 px-2 pb-8">
           <Button
-            className="w-full h-12 rounded-xl shadow-lg hover:shadow-xl transition-all"
+            className="w-full h-14 rounded-full bg-slate-900 text-white hover:bg-slate-800 shadow-xl transition-all text-base font-bold"
             onClick={() => {
               onSelect(selectedTrigger, metadata)
               setOpen(false)
@@ -186,6 +186,7 @@ export const TriggerSheet = ({
             Create Trigger
           </Button>
         </SheetFooter>
+
 
 
       </SheetContent>

@@ -73,21 +73,21 @@ export const ActionSheet = ({
       </SheetDescription>
     </SheetHeader>
 
-    <div className="flex flex-col gap-6 py-6 px-1">
-      <div className="space-y-2">
-        <Label className="text-sm font-medium text-muted-foreground">Action type</Label>
+    <div className="flex flex-col gap-8 py-8 px-2">
+      <div className="space-y-3">
+        <Label className="text-sm font-semibold text-muted-foreground/80">Action type</Label>
         <Select
           value={selectedAction}
           onValueChange={(value) => setSelectedAction(value)}
         >
-          <SelectTrigger className="w-full h-12 rounded-xl border-secondary bg-secondary/20">
+          <SelectTrigger className="w-full h-14 rounded-2xl border-secondary bg-secondary/10 px-4 text-base">
             <SelectValue placeholder="Select an action" />
           </SelectTrigger>
 
-          <SelectContent className="rounded-xl">
+          <SelectContent className="rounded-2xl">
             <SelectGroup>
               {SUPPORTED_ACTIONS.map(({ id, title }) => (
-                <SelectItem key={id} value={id}>{title} Exchange</SelectItem>
+                <SelectItem key={id} value={id} className="rounded-xl py-3">{title} Exchange</SelectItem>
               ))}
             </SelectGroup>
           </SelectContent>
@@ -95,39 +95,39 @@ export const ActionSheet = ({
       </div>
 
       {(selectedAction === "hyperliquid" || selectedAction === "lighter" || selectedAction === "backpack") && (
-        <div className="flex flex-col gap-6 animate-in fade-in slide-in-from-top-2 duration-300">
-          <div className="grid grid-cols-2 gap-4">
-            <div className="space-y-2">
-              <Label className="text-sm font-medium text-muted-foreground lowercase">type</Label>
+        <div className="flex flex-col gap-8 animate-in fade-in slide-in-from-top-2 duration-300">
+          <div className="grid grid-cols-2 gap-5">
+            <div className="space-y-3">
+              <Label className="text-sm font-semibold text-muted-foreground/80 lowercase">type</Label>
               <Select 
                 value={metadata?.type} 
                 onValueChange={(value) => setMetadata((prev: any) => ({ ...prev, type: value }))}
               >
-                <SelectTrigger className="w-full h-12 rounded-xl border-secondary bg-secondary/20">
+                <SelectTrigger className="w-full h-14 rounded-2xl border-secondary bg-secondary/10 px-4 text-base">
                   <SelectValue placeholder="Weather it is a long or a shor" />
                 </SelectTrigger>
-                <SelectContent className="rounded-xl">
+                <SelectContent className="rounded-2xl">
                   <SelectGroup>
-                    <SelectItem value={"long"}>LONG</SelectItem>
-                    <SelectItem value={"short"}>SHORT</SelectItem>
+                    <SelectItem value={"long"} className="rounded-xl py-3">LONG</SelectItem>
+                    <SelectItem value={"short"} className="rounded-xl py-3">SHORT</SelectItem>
                   </SelectGroup>
                 </SelectContent>
               </Select>
             </div>
 
-            <div className="space-y-2">
-              <Label className="text-sm font-medium text-muted-foreground">Asset</Label>
+            <div className="space-y-3">
+              <Label className="text-sm font-semibold text-muted-foreground/80">Asset</Label>
               <Select 
                 value={metadata?.symbol} 
                 onValueChange={(value) => setMetadata((prev: any) => ({ ...prev, symbol: value }))}
               >
-                <SelectTrigger className="w-full h-12 rounded-xl border-secondary bg-secondary/20">
+                <SelectTrigger className="w-full h-14 rounded-2xl border-secondary bg-secondary/10 px-4 text-base">
                   <SelectValue placeholder="Which asset to long or short" />
                 </SelectTrigger>
-                <SelectContent className="rounded-xl">
+                <SelectContent className="rounded-2xl">
                   <SelectGroup>
                     {SUPPORTED_ASSETS.map((asset) => (
-                      <SelectItem key={asset} value={asset}>{asset}</SelectItem>
+                      <SelectItem key={asset} value={asset} className="rounded-xl py-3">{asset}</SelectItem>
                     ))}
                   </SelectGroup>
                 </SelectContent>
@@ -135,22 +135,22 @@ export const ActionSheet = ({
             </div>
           </div>
 
-          <div className="space-y-2">
-            <Label className="text-sm font-medium text-muted-foreground">Quantity</Label>
+          <div className="space-y-3">
+            <Label className="text-sm font-semibold text-muted-foreground/80">Quantity</Label>
             <Input 
               placeholder="How much to long or short"
-              className="h-12 rounded-xl border-secondary bg-secondary/20"
+              className="h-14 rounded-2xl border-secondary bg-secondary/10 px-4 text-base"
               value={metadata?.qty ?? ""} 
               onChange={(e) => setMetadata((prev: any) => ({ ...prev, qty: Number(e.target.value) }))}
             />
           </div>
 
-          <div className="space-y-2">
-            <Label className="text-sm font-medium text-muted-foreground uppercase">API_KEY *</Label>
+          <div className="space-y-3">
+            <Label className="text-sm font-semibold text-muted-foreground/80 uppercase">API_KEY *</Label>
             <Input 
               type="password"
               placeholder="Enter API_KEY"
-              className="h-12 rounded-xl border-secondary bg-secondary/20"
+              className="h-14 rounded-2xl border-secondary bg-secondary/10 px-4 text-base"
               value={credentials?.API_KEY ?? ""} 
               onChange={(e) => setCredentials({ API_KEY: e.target.value })}
             />
@@ -159,9 +159,9 @@ export const ActionSheet = ({
       )}
     </div>
 
-    <SheetFooter className="mt-auto pt-6">
+    <SheetFooter className="mt-auto pt-10 px-2 pb-8">
       <Button
-        className="w-full h-12 rounded-xl shadow-lg hover:shadow-xl transition-all"
+        className="w-full h-14 rounded-full bg-slate-900 text-white hover:bg-slate-800 shadow-xl transition-all text-base font-bold"
         onClick={() => {
           onSelect(selectedAction as NodeKind, metadata, credentials)
           setOpen(false)
@@ -170,6 +170,7 @@ export const ActionSheet = ({
         Create Action
       </Button>
     </SheetFooter>
+
 
   </SheetContent>
 </Sheet>
