@@ -13,9 +13,32 @@ export interface SigninResponse extends IdResponse {
   token: string;
 }
 
+export interface NodeMetadataSchemaItem {
+  kind: string;
+  title: string;
+  description?: string;
+  values?: string[];
+}
+
+export interface NodeCredentialsType {
+  title: string;
+  type: string;
+  required: boolean;
+}
+
+export interface NodeDefinition {
+  _id: string;
+  title: string;
+  description?: string;
+  kind: "ACTION" | "TRIGGER";
+  type: string;
+  credentialsType: NodeCredentialsType[];
+  metadataSchema: NodeMetadataSchemaItem[];
+}
+
 export interface WorkflowNode {
   id: string;
-  nodeId: string;
+  nodeId: string; // reference to NodeDefinition._id
   position: { x: number; y: number };
   data: {
     kind: "ACTION" | "TRIGGER";
@@ -119,7 +142,7 @@ export const apiGetWorkflow = async (workflowId: string): Promise<{ workflow: Wo
 /**
  * List all nodes available
  */
-export const apiListNodes = async (): Promise<{ nodes: any[] }> => {
+export const apiListNodes = async (): Promise<{ nodes: NodeDefinition[] }> => {
   const response = await api.get("/nodes");
   return response.data;
 };

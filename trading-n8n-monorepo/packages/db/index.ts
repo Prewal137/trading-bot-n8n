@@ -90,17 +90,33 @@ const CredentialsTypeSchema = new Schema({
     
 })
 
+const MetadataSchemaItemSchema = new Schema({
+    kind: { type: String, required: true }, // e.g., "select", "number"
+    title: { type: String, required: true },
+    description: { type: String },
+    values: [String], // for select fields
+}, { _id: false });
+
 const NodesSchema = new Schema({
     title:{
         type:String,
         required:true
     },
-    type:{
-        type:String,
-        enum: ["ACTION","TRIGGER"],
-        required:true
+    description: {
+        type: String
     },
-    credentialsType: [CredentialsTypeSchema]
+    kind: {
+        type: String,
+        enum: ["ACTION", "TRIGGER"],
+        required: true
+    },
+    type: {
+        type: String,
+        required: true,
+        unique: true
+    },
+    credentialsType: [CredentialsTypeSchema],
+    metadataSchema: [MetadataSchemaItemSchema]
 })
 
 const ExecutionSchema = new Schema({

@@ -191,8 +191,34 @@ app.post("/nodes/seed", authMiddleware, async (req: Request, res: Response) => {
         }
 
         const initialNodes = [
-            { name: "Trigger", type: "trigger", icon: "zap", description: "Starts a workflow" },
-            { name: "Action", type: "action", icon: "activity", description: "Performs an action" }
+            {
+                title: "Lighter Exchange",
+                description: "Place a trade on lighter",
+                kind: "ACTION",
+                type: "lighter",
+                credentialsType: [
+                    { title: "API_KEY", type: "string", required: true }
+                ],
+                metadataSchema: [
+                    {
+                        kind: "select",
+                        title: "type",
+                        description: "Weather it is a long or a short",
+                        values: ["LONG", "SHORT"]
+                    },
+                    {
+                        kind: "select",
+                        title: "Asset",
+                        description: "Which asset to long or short",
+                        values: ["SOL", "BTC", "ETH"]
+                    },
+                    {
+                        kind: "number",
+                        title: "Quantity",
+                        description: "How much to long or short"
+                    }
+                ]
+            }
         ];
 
         await NodesModel.insertMany(initialNodes);

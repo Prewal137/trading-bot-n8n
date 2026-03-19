@@ -48,3 +48,21 @@ export const UpdateWorkflowSchema = z.object({
         target:z.string()
     })).optional()
 })
+
+export const NodeSchema = z.object({
+    title: z.string(),
+    description: z.string().optional(),
+    kind: z.enum(["ACTION", "TRIGGER"]),
+    type: z.string(),
+    credentialsType: z.array(z.object({
+        title: z.string(),
+        type: z.string(),
+        required: z.boolean()
+    })),
+    metadataSchema: z.array(z.object({
+        kind: z.string(),
+        title: z.string(),
+        description: z.string().optional(),
+        values: z.array(z.string()).optional()
+    }))
+})
