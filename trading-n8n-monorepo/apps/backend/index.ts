@@ -2,13 +2,14 @@ import dotenv from "dotenv";
 dotenv.config();
 import express, { Request, Response } from "express";
 import mongoose from "mongoose";
-import { UserModel } from "@repo/db/client";
-import { SignupSchema,SigninSchema } from "@repo/common/types";
+import { UserModel, WorkflowModel, ExecutionModel, NodesModel } from "@repo/db/client";
+import { SignupSchema, SigninSchema, CreateWorkflowSchema, UpdateWorkflowSchema } from "@repo/common/types";
 import jwt from "jsonwebtoken";
 import { authMiddleware } from "./middleware";
 const app = express();
 app.use(express.json());
-const JWT_SECRET = process.env.JWT_SECRET;
+const JWT_SECRET = process.env.JWT_SECRET || "";
+console.log("Global JWT_SECRET length:", JWT_SECRET.length);
 // Routes
 app.post("/signup", async (req: Request, res: Response) => {
   const { success, data } = SignupSchema.safeParse(req.body);
@@ -47,10 +48,13 @@ app.post("/signin", async (req: Request, res: Response) => {
       password: data.password
     })
     if (user) {
+      const secret = process.env.JWT_SECRET || "";
+      console.log("Signing token with secret length:", secret.length);
       const token = jwt.sign({
       id : user._id
-    }, JWT_SECRET as string);
+    }, secret);
       // return the user their jwt/token;
+      console.log("Generated token for user:", user._id);
       res.json({
         id: user._id,
         token
@@ -68,27 +72,108 @@ app.post("/signin", async (req: Request, res: Response) => {
 
 });
 
-app.post("/workflow", authMiddleware, (req, res) => {
+app.post("/workflow", authMiddleware, async (req: Request, res: Response) => {
   const userId = req.userId!;
+  console.log("Incoming workflow creation request from userId:", userId);
+  console.log("Request body:", JSON.stringify(req.body, null, 2));
 
+  const { success, data } = CreateWorkflowSchema.safeParse(req.body);
+  if (!success) {
+      console.log("Validation failed:", data);
+      res.status(403).json({
+          message: "Incorrect inputs"
+      })
+      return
+  }
+  try {
+      const workflow = await WorkflowModel.create({
+          userId,
+          nodes: data.nodes,
+          edges: data.edges,
+      })
+      console.log("Workflow created successfully:", workflow);
+      res.json({
+          id: workflow._id,
+          userId
+      })
+  } catch(e: any) {
+      console.error("Failed to create workflow in DB:", e.message);
+      res.status(500).json({
+          message: "Internal server error"
+      })
+  }
 
 });
 
-app.put("/workflow", authMiddleware, (req, res) => {
-
+app.put("/workflow/:workflowId", authMiddleware, async (req: Request, res: Response) => {
+  const { success, data } = UpdateWorkflowSchema.safeParse(req.body);
+  if (!success) {
+      res.status(403).json({
+          message: "Incorrect inputs"
+      })
+      return
+  }
+  try {
+      await WorkflowModel.updateOne({
+          _id: req.params.workflowId,
+          userId: req.userId
+      }, {
+          nodes: data.nodes,
+          edges: data.edges
+      })
+      res.json({
+          message: "Workflow updated"
+      })
+  } catch(e) {
+      res.status(411).json({
+          message: "Failed to update workflow"
+      })
+  }
 });
 
-app.get("/workflow/:workflowId", authMiddleware, (req, res) => {
-
+app.get("/workflow/:workflowId", authMiddleware, async (req: Request, res: Response) => {
+  try {
+      const workflow = await WorkflowModel.findOne({
+          _id: req.params.workflowId,
+          userId: req.userId
+      })
+      res.json({
+          workflow
+      })
+  } catch(e) {
+      res.status(411).json({
+          message: "Failed to get workflow"
+      })
+  }
 });
 
-app.get("/workflow/executions/:workflowId", authMiddleware, (req, res) => {
-
+app.get("/workflow/executions/:workflowId", authMiddleware, async (req: Request, res: Response) => {
+  try {
+      const executions = await ExecutionModel.find({
+          workflowId: req.params.workflowId,
+      })
+      res.json({
+          executions
+      })
+  } catch(e) {
+      res.status(411).json({
+          message: "Failed to get executions"
+      })
+  }
 });
 
 
-app.get("/nodes", authMiddleware, (req, res) => {
-
+app.get("/nodes", authMiddleware, async (req: Request, res: Response) => {
+  try {
+      const nodes = await NodesModel.find({});
+      res.json({
+          nodes
+      })
+  } catch(e) {
+      res.status(411).json({
+          message: "Failed to get nodes"
+      })
+  }
 });
 
 async function main() {
