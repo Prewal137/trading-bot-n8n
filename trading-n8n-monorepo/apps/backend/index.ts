@@ -67,31 +67,24 @@ app.post("/signin", async (req: Request, res: Response) => {
 
 });
 
-app.post("/workflow", (req, res) => {
+app.post("/workflow", authMiddleware, (req, res) => {
 
 });
 
-app.put("/workflow", (req, res) => {
+app.put("/workflow", authMiddleware, (req, res) => {
 
 });
 
-app.get("/workflow/:workflowId", (req, res) => {
+app.get("/workflow/:workflowId", authMiddleware, (req, res) => {
 
 });
 
-app.get("/workflow/executions/:workflowId", (req, res) => {
+app.get("/workflow/executions/:workflowId", authMiddleware, (req, res) => {
 
 });
 
-app.post("/credentials", (req, res) => {
 
-});
-
-app.get("/credentials", (req, res) => {
-
-});
-
-app.get("/nodes", (req, res) => {
+app.get("/nodes", authMiddleware, (req, res) => {
 
 });
 
