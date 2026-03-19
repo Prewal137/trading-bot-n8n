@@ -1,3 +1,4 @@
+import React from "react";
 import { BrowserRouter, Routes, Route, Link, useNavigate, Navigate } from "react-router-dom";
 import Landing from "@/pages/Landing";
 import Auth from "@/pages/Auth";
@@ -12,11 +13,14 @@ import { LayoutDashboard } from "lucide-react";
 // Auth Guard Component
 function ProtectedRoute({ children }: { children: React.ReactNode }) {
   const token = getAuthToken();
-  if (!token) {
+  // Ensure token exists and is a valid non-placeholder string
+  if (!token || token === "null" || token === "undefined" || token === "" ) {
     return <Navigate to="/auth" replace />;
   }
+
   return <>{children}</>;
 }
+
 
 function Navigation() {
   const navigate = useNavigate();
