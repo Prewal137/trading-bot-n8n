@@ -182,6 +182,16 @@ app.get("/nodes", authMiddleware, async (req: Request, res: Response) => {
   }
 });
 
+// Clear all nodes (for development/reset)
+app.delete("/nodes/clear", authMiddleware, async (req: Request, res: Response) => {
+    try {
+        await NodesModel.deleteMany({});
+        res.json({ message: "All nodes cleared successfully" });
+    } catch (e: any) {
+        res.status(500).json({ message: e.message });
+    }
+});
+
 // Bonus: Seed initial nodes if database is empty
 app.post("/nodes/seed", authMiddleware, async (req: Request, res: Response) => {
     try {
