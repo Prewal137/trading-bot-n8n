@@ -27,7 +27,8 @@ import { Label } from "@/components/ui/label"
 import { type TimerNodeMetadata, type PriceTriggerMetadata, SUPPORTED_ASSETS } from "@repo/common";
 
 const SUPPORTED_TRIGGERS = [
-  { id: "timer-trigger", title: "Timer" },
+  { id: "timer", title: "Timer" },
+
   { id: "price-trigger", title: "Price Trigger" },
 ]
 
@@ -50,7 +51,7 @@ export const TriggerSheet = ({
     }
   }
 
-  const [selectedTrigger, setSelectedTrigger] = useState<NodeKind>("timer-trigger")
+  const [selectedTrigger, setSelectedTrigger] = useState<NodeKind>("timer")
 
   const [metadata, setMetadata] = useState<
     TimerNodeMetadata | PriceTriggerMetadata
@@ -61,9 +62,10 @@ export const TriggerSheet = ({
   const handleTriggerChange = (value: NodeKind) => {
     setSelectedTrigger(value)
 
-    if (value === "timer-trigger") {
+    if (value === "timer") {
       setMetadata({ time: 3600 } as TimerNodeMetadata)
     }
+
 
     if (value === "price-trigger") {
       setMetadata({
@@ -105,7 +107,8 @@ export const TriggerSheet = ({
             </SelectContent>
           </Select>
 
-          {selectedTrigger === "timer-trigger" && (
+          {selectedTrigger === "timer" && (
+
             <div className="flex flex-col gap-2">
               <Label>Number of seconds after which to run the timer</Label>
               <Input

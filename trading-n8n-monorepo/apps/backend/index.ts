@@ -5,9 +5,12 @@ import mongoose from "mongoose";
 import { UserModel, WorkflowModel, ExecutionModel, NodesModel } from "@repo/db/client";
 import { SignupSchema, SigninSchema, CreateWorkflowSchema, UpdateWorkflowSchema } from "@repo/common/types";
 import jwt from "jsonwebtoken";
+import cors from "cors";
 import { authMiddleware } from "./middleware";
 const app = express();
 app.use(express.json());
+app.use(cors());
+
 const JWT_SECRET = process.env.JWT_SECRET || "";
 console.log("Global JWT_SECRET length:", JWT_SECRET.length);
 // Routes
@@ -146,6 +149,22 @@ app.get("/workflow/:workflowId", authMiddleware, async (req: Request, res: Respo
       })
   }
 });
+
+app.get("/workflows", authMiddleware, async (req: Request, res: Response) => {
+    try {
+        const workflows = await WorkflowModel.find({
+            userId: req.userId
+        })
+        res.json({
+            workflows
+        })
+    } catch(e) {
+        res.status(500).json({
+            message: "Internal server error"
+        })
+    }
+});
+
 
 app.get("/workflow/executions/:workflowId", authMiddleware, async (req: Request, res: Response) => {
   try {

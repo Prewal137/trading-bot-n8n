@@ -1,25 +1,27 @@
 import { useState, useCallback } from "react";
 import { ReactFlow, applyNodeChanges, applyEdgeChanges, addEdge, Background, Controls } from "@xyflow/react";
 import "@xyflow/react/dist/style.css";
+import { useNavigate } from "react-router-dom";
 import { TriggerSheet } from './TriggerSheet';
 import { ActionSheet } from './ActionSheet';
 import { Button } from "@/components/ui/button";
 import { PriceTrigger } from '@/nodes/triggers/PriceTrigger';
-
 import { Timer } from '@/nodes/triggers/Timer';
-
 import { type TimerNodeMetadata, type TradingMetadata, type PriceTriggerMetadata } from "@repo/common"
 import { Lighter } from '@/nodes/actions/Lighter';
 import { Backpack } from '@/nodes/actions/Backpack';
 import { Hyperliquid } from '@/nodes/actions/Hyperliquid';
+import { apiCreateWorkflow } from "@/lib/api";
+import { Save } from "lucide-react";
 
 const nodeTypes = {
   "price-trigger": PriceTrigger,
-  "timer-trigger": Timer,
+  "timer": Timer,
   "lighter": Lighter,
   "backpack": Backpack,
   "hyperliquid": Hyperliquid
 };
+
 
 export type NodeKind = "price-trigger" | "timer" | "hyperliquid" | "backpack" | "lighter";
 
@@ -44,6 +46,35 @@ interface Edge {
 export function CreateWorkflow() {
   const [nodes, setNodes] = useState<NodeType[]>([]);
   const [edges, setEdges] = useState<Edge[]>([]);
+  const [loading, setLoading] = useState(false);
+  const navigate = useNavigate();
+
+  const handleSave = async () => {
+    if (nodes.length === 0) return;
+    setLoading(true);
+    try {
+      // Map nodes to backend format if necessary
+      // Backend expects WorkflowNode: { id, nodeId, position, data }
+      // Our NodeType: { type, data, id, position }
+      const formattedNodes = nodes.map(n => ({
+        id: n.id,
+        nodeId: n.type, // Map 'type' to 'nodeId' for backend
+        position: n.position,
+        data: n.data
+      }));
+
+      await apiCreateWorkflow({
+        nodes: formattedNodes,
+        edges: edges
+      });
+      navigate("/dashboard");
+    } catch (err) {
+      console.error("Failed to save workflow", err);
+    } finally {
+      setLoading(false);
+    }
+  };
+
   const [selectAction, setSelectAction] = useState<{
     position: {
       x: number;
@@ -66,7 +97,7 @@ export function CreateWorkflow() {
     []
   );
   const onConnectEnd = useCallback(
-    (params: any, connectionInfo: any) => {
+    (_: any, connectionInfo: any) => {
       if (!connectionInfo.isValid) {
         setSelectAction({
           startingNodeId: connectionInfo.fromNode?.id,
@@ -84,6 +115,11 @@ export function CreateWorkflow() {
 
   return (
     <div style={{ width: "100vw", height: "100vh" }}>
+      <div className="absolute top-4 right-4 z-50">
+        <Button onClick={handleSave} disabled={loading || nodes.length === 0} className="shadow-lg">
+          <Save className="mr-2 h-4 w-4" /> {loading ? "Saving..." : "Save Workflow"}
+        </Button>
+      </div>
 
       {(!nodes.length && showTriggerSheet) && <TriggerSheet 
         onSelect={(type, metadata) => {
@@ -139,11 +175,14 @@ export function CreateWorkflow() {
         onConnect={onConnect}
         onConnectEnd={onConnectEnd}
         fitView
+        className="bg-secondary/5"
       >
-        <Background variant="dots" gap={12} size={1} />
-        <Controls />
+        <Background variant={"dots" as any} gap={12} size={1} color="#cbd5e1" />
+        <Controls className="bg-background border shadow-md rounded-md p-1 fill-foreground" />
       </ReactFlow>
+
+
 
     </div>
   );
-}
+}

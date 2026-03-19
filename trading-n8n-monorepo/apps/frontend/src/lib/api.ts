@@ -141,7 +141,16 @@ export const apiGetWorkflow = async (workflowId: string): Promise<{ workflow: Wo
 };
 
 /**
+ * List all workflows for the user
+ */
+export const apiListWorkflows = async (): Promise<{ workflows: Workflow[] }> => {
+  const response = await api.get("/workflows");
+  return response.data;
+};
+
+/**
  * List all nodes available
+
  */
 export const apiListNodes = async (): Promise<{ nodes: NodeDefinition[] }> => {
   const response = await api.get("/nodes");

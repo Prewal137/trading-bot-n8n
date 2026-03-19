@@ -1,12 +1,13 @@
 import React from "react";
+import { CreateWorkflow as CreateWorkflowComponent } from "@/components/CreateWorkflow";
 
 const CreateWorkflow = () => {
   return (
-    <div className="h-screen w-screen">
-      <h1 className="p-4 text-xl font-semibold">Create New Workflow</h1>
-      {/* React Flow Editor will go here */}
+    <div className="h-screen w-screen overflow-hidden">
+      <CreateWorkflowComponent />
     </div>
   );
 };
 
 export default CreateWorkflow;
+
