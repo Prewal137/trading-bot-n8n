@@ -1,15 +1,15 @@
 import dotenv from "dotenv";
 dotenv.config();
-import express from "express";
+import express, { Request, Response } from "express";
 import mongoose from "mongoose";
 import { UserModel } from "@repo/db/client";
 import { SignupSchema,SigninSchema } from "@repo/common/types";
-
+import jwt from "jsonwebtoken";
 const app = express();
 app.use(express.json());
-
+const JWT_SECRET = process.env.JWT_SECRET;
 // Routes
-app.post("/signup", async (req, res) => {
+app.post("/signup", async (req: Request, res: Response) => {
   const { success, data } = SignupSchema.safeParse(req.body);
   if (!success) {
     res.status(403).json({
@@ -21,7 +21,7 @@ app.post("/signup", async (req, res) => {
     const user = await UserModel.create({
       username: data.username,
       password: data.password
-    });
+    })
     res.json({
       id: user._id
     });
@@ -32,7 +32,7 @@ app.post("/signup", async (req, res) => {
   }
 });
 
-app.post("/signin", async (req, res) => {
+app.post("/signin", async (req: Request, res: Response) => {
   const { success, data } = SigninSchema.safeParse(req.body);
   if (!success) {
     res.status(403).json({
@@ -46,9 +46,13 @@ app.post("/signin", async (req, res) => {
       password: data.password
     })
     if (user) {
+      const token = jwt.sign({
+      id : user._id
+    }, JWT_SECRET as string);
       // return the user their jwt/token;
       res.json({
-        id: user._id
+        id: user._id,
+        token
       })
     } else {
       res.status(403).json({
