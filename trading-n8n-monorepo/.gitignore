@@ -36,3 +36,14 @@ yarn-error.log*
 # Misc
 .DS_Store
 *.pem
+# Monorepo builds
+**/dist
+
+# TS cache
+*.tsbuildinfo
+
+# Env wildcard
+.env.*
+
+# Editor
+.vscode
