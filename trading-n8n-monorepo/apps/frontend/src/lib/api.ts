@@ -1,4 +1,6 @@
-import axios, { InternalAxiosRequestConfig, AxiosError } from "axios";
+import axios from "axios";
+import type { InternalAxiosRequestConfig, AxiosError } from "axios";
+
 
 // --- Constants ---
 const BACKEND_URL = "http://localhost:3001";
