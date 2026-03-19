@@ -166,14 +166,40 @@ app.get("/workflow/executions/:workflowId", authMiddleware, async (req: Request,
 app.get("/nodes", authMiddleware, async (req: Request, res: Response) => {
   try {
       const nodes = await NodesModel.find({});
+      if (nodes.length === 0) {
+          console.log("No nodes found in the 'nodes' collection.");
+      } else {
+          console.log(`Successfully fetched ${nodes.length} nodes.`);
+      }
       res.json({
           nodes
       })
-  } catch(e) {
-      res.status(411).json({
-          message: "Failed to get nodes"
+  } catch(e: any) {
+      console.error("Error fetching nodes:", e.message);
+      res.status(500).json({
+          message: "Internal server error while fetching nodes"
       })
   }
+});
+
+// Bonus: Seed initial nodes if database is empty
+app.post("/nodes/seed", authMiddleware, async (req: Request, res: Response) => {
+    try {
+        const count = await NodesModel.countDocuments();
+        if (count > 0) {
+            return res.status(400).json({ message: "Nodes already seeded" });
+        }
+
+        const initialNodes = [
+            { name: "Trigger", type: "trigger", icon: "zap", description: "Starts a workflow" },
+            { name: "Action", type: "action", icon: "activity", description: "Performs an action" }
+        ];
+
+        await NodesModel.insertMany(initialNodes);
+        res.json({ message: "Initial nodes seeded successfully" });
+    } catch (e: any) {
+        res.status(500).json({ message: e.message });
+    }
 });
 
 async function main() {
