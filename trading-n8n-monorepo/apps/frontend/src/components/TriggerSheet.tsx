@@ -177,8 +177,9 @@ export const TriggerSheet = ({
 
         <SheetFooter className="mt-auto pt-10 px-2 pb-8">
           <Button
-            className="w-full h-14 rounded-full bg-slate-900 text-white hover:bg-slate-800 shadow-xl transition-all text-base font-bold"
+            className="w-full h-12 rounded-full bg-slate-900 text-white hover:bg-slate-800 shadow-xl transition-all text-base font-bold"
             onClick={() => {
+
               onSelect(selectedTrigger, metadata)
               setOpen(false)
             }}

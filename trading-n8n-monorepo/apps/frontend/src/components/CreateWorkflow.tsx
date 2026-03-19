@@ -181,7 +181,8 @@ export function CreateWorkflow() {
           className="bg-secondary/5"
         >
           <Background variant={"dots" as any} gap={12} size={1} color="#cbd5e1" />
-          <Controls className="bg-background border shadow-md rounded-md p-1 fill-foreground" />
+          <Controls className="bg-background border shadow-md rounded-md p-1 fill-foreground mb-4 ml-4" />
+
         </ReactFlow>
       </div>
     </div>
