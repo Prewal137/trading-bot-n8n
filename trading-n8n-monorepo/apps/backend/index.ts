@@ -202,6 +202,20 @@ app.post("/nodes/seed", authMiddleware, async (req: Request, res: Response) => {
 
         const initialNodes = [
             {
+                title: "Timer",
+                description: "Run a workflow every x seconds",
+                kind: "TRIGGER",
+                type: "timer",
+                credentialsType: [],
+                metadataSchema: [
+                    {
+                        kind: "number",
+                        title: "Seconds",
+                        description: "How often to trigger the workflow"
+                    }
+                ]
+            },
+            {
                 title: "Lighter Exchange",
                 description: "Place a trade on lighter",
                 kind: "ACTION",
