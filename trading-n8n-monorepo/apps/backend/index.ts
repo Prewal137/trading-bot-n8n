@@ -5,6 +5,7 @@ import mongoose from "mongoose";
 import { UserModel } from "@repo/db/client";
 import { SignupSchema,SigninSchema } from "@repo/common/types";
 import jwt from "jsonwebtoken";
+import { authMiddleware } from "./middleware";
 const app = express();
 app.use(express.json());
 const JWT_SECRET = process.env.JWT_SECRET;
