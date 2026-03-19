@@ -59,8 +59,9 @@ const api = axios.create({
 api.interceptors.request.use(
   (config) => {
     const token = getAuthToken();
-    if (token) {
-      config.headers.Authorization = `Bearer ${token}`;
+    if (token && config.headers) {
+      // Use any cast to avoid version-specific header type issues
+      (config.headers as any).Authorization = `Bearer ${token}`;
     }
     return config;
   },
