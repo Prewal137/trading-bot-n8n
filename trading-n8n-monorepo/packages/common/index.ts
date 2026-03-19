@@ -6,5 +6,5 @@ export type NodeKind =
   | "lighter";
 
 export type NodeMetadata = Record<string, any>;
-export * from "./metadata";
-export * from "./types";
+export * from "./metadata/index";
+export * from "./types/index";

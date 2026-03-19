@@ -1,8 +1,8 @@
 
 import express from "express";
 import mongoose from "mongoose";
-import { SignupSchema } from "common/types";
-import { UserModel } from "db/client";
+import { UserModel } from "@repo/db/client";
+import { SignupSchema } from "@repo/common/types";
 mongoose.connect(process.env.MONGO_URL!)
 const app = express();
 

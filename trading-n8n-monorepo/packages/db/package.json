@@ -1,8 +1,10 @@
 {
-  "name": "db",
+  "name": "@repo/db",
   "version": "1.0.0",
   "description": "",
-  "main": "index.js",
+  "type": "module",
+  "main": "./index.ts",
+  "types": "./index.ts",
   "exports": {
     "./client": "./index.ts"
   },
@@ -12,7 +14,6 @@
   "keywords": [],
   "author": "",
   "license": "ISC",
-  "type": "commonjs",
   "dependencies": {
     "mongoose": "^9.3.1"
   },
