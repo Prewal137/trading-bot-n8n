@@ -9,7 +9,7 @@ export const SigninSchema = z.object({
 })
 export const CreateWorkflowSchema = z.object({
     nodes:z.array(z.object({
-        type:z.string(),
+        nodeId:z.string(),
         data:z.object({
             kind:z.enum(["ACTION","TRIGGER"]),
             metadata:z.any()
@@ -30,7 +30,7 @@ export const CreateWorkflowSchema = z.object({
 
 export const UpdateWorkflowSchema = z.object({
     nodes:z.array(z.object({
-        type:z.string(),
+        nodeId:z.string(),
         data:z.object({
             kind:z.enum(["ACTION","TRIGGER"]),
             metadata:z.any()
