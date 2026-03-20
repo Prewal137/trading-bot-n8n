@@ -19,6 +19,7 @@ async function main() {
                 })
 
                 if (!execution) {
+                   await execute();
 
                 }
 
@@ -29,4 +30,4 @@ async function main() {
 
 
 main()
-
+
