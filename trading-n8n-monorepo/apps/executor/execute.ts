@@ -2,13 +2,16 @@ import { NodesModel } from "@repo/db";
 import { execute as executeLighter } from "./executors/lighter.js";
 export type NodeDocument = {
     id: string;
-    type: string;
+    type?: string;
     credentials?: any;
     data?: {
         metadata?: any;
         kind?: "ACTION" | "TRIGGER" | null | undefined;
     } | null | undefined;
-    nodeId: string;
+    nodeId: string | {
+        _id: string;
+        type: string;
+    };
 };
 
 type EdgeDocument = {
@@ -17,17 +20,23 @@ type EdgeDocument = {
 };
 
 export async function execute(nodes: NodeDocument[], edges: EdgeDocument[]) {
+    // Normalize nodes to ensure they have a top-level type
+    const normalizedNodes = nodes.map(node => ({
+        ...node,
+        type: node.type || (typeof node.nodeId === "object" ? node.nodeId.type : "")
+    }));
+
     // 1. Find the trigger node
-    const trigger = nodes.find(x => x.data?.kind === "TRIGGER");
+    const trigger = normalizedNodes.find(x => x.data?.kind === "TRIGGER");
     if (!trigger) {
         return;
     }
 
     // Start recursive execution from the trigger node
-    await executeRecursive(trigger.id, nodes, edges);
+    await executeRecursive(trigger.id, normalizedNodes, edges);
 }
 
-export async function executeRecursive(sourceId: string, nodes: NodeDocument[], edges: EdgeDocument[]) {
+export async function executeRecursive(sourceId: string, nodes: any[], edges: EdgeDocument[]) {
     // 1. Find all target node IDs that originate from the current sourceId
     const nodesToExecute = edges
         .filter(({ source }) => source === sourceId)
