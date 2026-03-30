@@ -1,5 +1,5 @@
 import { NodesModel } from "@repo/db";
-
+import { execute as executeLighter } from "./executors/lighter.js";
 export type NodeDocument = {
     id: string;
     type: string;
@@ -42,7 +42,14 @@ export async function executeRecursive(sourceId: string, nodes: NodeDocument[], 
 
         switch (node.type) {
             case "lighter":
-                // Placeholder for actual node execution logic
+                if (node.data?.metadata) {
+                    executeLighter(
+                        node.data.metadata.asset,
+                        node.data.metadata.quantity,
+                        node.data.metadata.type,
+                        node.credentials?.apiKey
+                    );
+                }
                 console.log(`Executing 'lighter' logic for node ${node.id}`);
                 break;
         }
@@ -56,4 +63,4 @@ export async function executeRecursive(sourceId: string, nodes: NodeDocument[], 
 
 
 
-
+
