@@ -1,8 +1,10 @@
-import { WorkflowModel, ExecutionModel } from "@repo/db";
-import { execute, NodeDocument } from "./execute.js";
+import { WorkflowModel, ExecutionModel, NodesModel } from "db/client";
+import { execute } from "./execute.js";
+import mongoose from "mongoose";
 
 async function main() {
-    while (true) {
+    await mongoose.connect(process.env.MONGO_URL!);
+    while (1) {
         // ... (rest of the file remains same, but I'll update the call)
         const workflows = await WorkflowModel.find({}).populate("nodes.nodeId");
         
@@ -20,12 +22,10 @@ async function main() {
                 }).sort({ startTime: -1 });
 
                 if (!execution || (execution.startTime.getTime() + (timeInS * 1000) <= Date.now())) {
-                    // Create execution record here since execute() signature changed in the tutorial
-                    await ExecutionModel.create({
+                    const execution = await ExecutionModel.create({
                         workflowId: workflow._id,
                         status: "PENDING",
                         startTime: new Date(),
-                        endTime: new Date()
                     });
 
                     const nodes: NodeDocument[] = workflow.nodes.map((node: any) => ({
@@ -38,10 +38,9 @@ async function main() {
 
                     await execute(nodes, workflow.edges as any);
 
-                    await ExecutionModel.findOneAndUpdate({ workflowId: workflow._id }, {
-                        status: "SUCCESS",
-                        endTime: new Date()
-                    }, { sort: { startTime: -1 } });
+                    execution.status = "SUCCESS";
+                    execution.endTime = new Date();
+                    await execution.save();
                 }
             }
         }
