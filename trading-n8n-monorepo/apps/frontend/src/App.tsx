@@ -28,7 +28,10 @@ function Navigation() {
   const isAuthenticated = !!getAuthToken();
   
   // Hide navigation on Auth page
-  if (location === "/auth") return null;
+  const hideNavbarOn = ["/auth", "/createworkflow"];
+  const isWorkflowEditor = location === "/createworkflow" || location.startsWith("/workflow/");
+  
+  if (hideNavbarOn.includes(location) || isWorkflowEditor) return null;
 
   return (
     <nav className="border-b bg-background/80 backdrop-blur-md sticky top-0 z-40">

@@ -26,14 +26,14 @@ const nodeTypes = {
 export type NodeKind = "price-trigger" | "timer" | "hyperliquid" | "backpack" | "lighter";
 
 interface NodeType {
-  type: NodeKind,
+  type: NodeKind;
   data: {
-    kind: "action" | "trigger",
-    metadata: NodeMetadata,
-  },
-  id: string,
-  credentials?: any; // Added credentials
-  position: { x: number, y: number },
+    kind: "ACTION" | "TRIGGER";
+    metadata: NodeMetadata;
+  };
+  id: string;
+  credentials?: any;
+  position: { x: number; y: number };
 }
 
 export type NodeMetadata = TradingMetadata | PriceTriggerMetadata | TimerNodeMetadata;
@@ -128,7 +128,7 @@ export function CreateWorkflow() {
               id: Math.random().toString(),
               type,
               data: {
-                kind: "trigger",
+                kind: "TRIGGER",
                 metadata,
               },
               position: { x: 100, y: 100 },
@@ -144,7 +144,7 @@ export function CreateWorkflow() {
               id: nodeId,
               type,
               data: {
-                kind: "action",
+                kind: "ACTION",
                 metadata,
               },
               credentials, // Store credentials

@@ -1,6 +1,6 @@
 export type NodeKind =
   | "price-trigger"
-  | "timer-trigger"
+  | "timer"
   | "hyperliquid"
   | "backpack"
   | "lighter";

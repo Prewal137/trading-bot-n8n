@@ -108,8 +108,8 @@ export const ActionSheet = ({
                 </SelectTrigger>
                 <SelectContent className="rounded-2xl">
                   <SelectGroup>
-                    <SelectItem value={"long"} className="rounded-xl py-3">LONG</SelectItem>
-                    <SelectItem value={"short"} className="rounded-xl py-3">SHORT</SelectItem>
+                    <SelectItem value={"LONG"} className="rounded-xl py-3">LONG</SelectItem>
+                    <SelectItem value={"SHORT"} className="rounded-xl py-3">SHORT</SelectItem>
                   </SelectGroup>
                 </SelectContent>
               </Select>
@@ -119,7 +119,7 @@ export const ActionSheet = ({
               <Label className="text-sm font-semibold text-muted-foreground/80">Asset</Label>
               <Select 
                 value={metadata?.symbol} 
-                onValueChange={(value) => setMetadata((prev: any) => ({ ...prev, symbol: value }))}
+                onValueChange={(value) => setMetadata((prev: any) => ({ ...prev, asset: value }))}
               >
                 <SelectTrigger className="w-full h-14 rounded-2xl border-secondary bg-secondary/10 px-4 text-base">
                   <SelectValue placeholder="Which asset to long or short" />
@@ -140,8 +140,8 @@ export const ActionSheet = ({
             <Input 
               placeholder="How much to long or short"
               className="h-14 rounded-2xl border-secondary bg-secondary/10 px-4 text-base"
-              value={metadata?.qty ?? ""} 
-              onChange={(e) => setMetadata((prev: any) => ({ ...prev, qty: Number(e.target.value) }))}
+              value={metadata?.quantity ?? ""} 
+              onChange={(e) => setMetadata((prev: any) => ({ ...prev, quantity: Number(e.target.value) }))}
             />
           </div>
 
