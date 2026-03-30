@@ -1,5 +1,5 @@
 import { WorkflowModel, ExecutionModel, NodesModel } from "db/client";
-import { execute } from "./execute.js";
+import { execute, NodeDocument } from "./execute.js";
 import mongoose from "mongoose";
 
 async function main() {
