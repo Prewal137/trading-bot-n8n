@@ -2,11 +2,20 @@ import React, { useEffect, useState } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import { apiListExecutions } from "@/lib/api";
 import { Button } from "@/components/ui/button";
-import { ArrowLeft, CheckCircle2, XCircle, Clock } from "lucide-react";
+import { ArrowLeft } from "lucide-react";
+
+interface Execution {
+  _id: string;
+  status: "SUCCESS" | "FAILED" | "PENDING";
+  createdAt: string;
+  endedAt?: string;
+  startTime?: string;
+  endTime?: string;
+}
 
 const WorkflowExecutions = () => {
   const { workflowId } = useParams();
-  const [executions, setExecutions] = useState<any[]>([]);
+  const [executions, setExecutions] = useState<Execution[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
   const navigate = useNavigate();
@@ -27,76 +36,98 @@ const WorkflowExecutions = () => {
     fetchExecutions();
   }, [workflowId]);
 
-  if (loading) return <div className="p-8 text-center">Loading...</div>;
+  const formatDateTime = (dateStr?: string) => {
+    if (!dateStr) return "N/A";
+    const date = new Date(dateStr);
+    return `${date.getDate().toString().padStart(2, '0')}/${(date.getMonth() + 1).toString().padStart(2, '0')}/${date.getFullYear()}, ${date.getHours().toString().padStart(2, '0')}:${date.getMinutes().toString().padStart(2, '0')}:${date.getSeconds().toString().padStart(2, '0')}`;
+  };
+
+  const getStatusBadge = (status: string) => {
+    const baseClasses = "px-4 py-1.5 rounded-md text-xs font-bold uppercase tracking-wider shadow-sm";
+    switch (status) {
+      case "SUCCESS":
+        return <span className={`${baseClasses} bg-green-100 text-green-800 border border-green-200`}>Success</span>;
+      case "FAILED":
+        return <span className={`${baseClasses} bg-red-100 text-red-800 border border-red-200`}>Failed</span>;
+      default: // PENDING
+        return <span className={`${baseClasses} bg-amber-100 text-amber-800 border border-amber-200`}>Pending</span>;
+    }
+  };
+
+  if (loading) return (
+    <div className="p-10 text-center animate-pulse">
+        <div className="h-8 w-48 bg-secondary/20 rounded mx-auto mb-4" />
+        <div className="h-4 w-64 bg-secondary/10 rounded mx-auto" />
+    </div>
+  );
 
   return (
-    <div className="p-8 max-w-5xl mx-auto">
-      <Button variant="ghost" onClick={() => navigate(`/workflow/${workflowId}`)} className="mb-6">
-        <ArrowLeft className="mr-2 h-4 w-4" /> Back to Workflow
-      </Button>
-
-      <div className="flex justify-between items-center mb-8">
-        <div>
-          <h1 className="text-3xl font-bold tracking-tight">Execution History</h1>
-          <p className="text-muted-foreground mt-1">Review the performance and logs of your workflow.</p>
+    <div className="p-6 md:p-12 max-w-7xl mx-auto min-h-screen bg-slate-50/50">
+      <div className="flex flex-col md:flex-row justify-between items-start md:items-end gap-6 mb-12">
+        <div className="space-y-2">
+          <h1 className="text-4xl font-extrabold tracking-tight text-slate-900">Executions</h1>
+          <p className="text-muted-foreground text-sm font-mono bg-slate-100 px-3 py-1 rounded-full inline-block border">
+            Workflow ID: {workflowId}
+          </p>
+        </div>
+        
+        <div className="flex gap-3 w-full md:w-auto">
+          <Button variant="outline" onClick={() => navigate(`/workflow/${workflowId}`)} className="flex-1 md:flex-none rounded-full px-6 font-semibold shadow-sm hover:shadow-md transition-all bg-white border-slate-200">
+            Open workflow
+          </Button>
+          <Button onClick={() => navigate("/dashboard")} className="flex-1 md:flex-none rounded-full px-6 font-semibold shadow-md hover:shadow-lg transition-all bg-slate-900 text-white hover:bg-slate-800">
+            Back to dashboard
+          </Button>
         </div>
       </div>
 
       {error ? (
-        <div className="bg-destructive/10 text-destructive p-4 rounded-md text-center">
-          {error}
+        <div className="bg-destructive/10 text-destructive p-8 rounded-2xl border border-destructive/20 text-center shadow-sm">
+          <p className="font-bold text-xl mb-4">{error}</p>
+          <Button variant="outline" className="rounded-full px-8" onClick={() => window.location.reload()}>Retry</Button>
         </div>
       ) : executions.length === 0 ? (
-        <div className="flex flex-col items-center justify-center h-64 border-2 border-dashed rounded-xl bg-secondary/10">
-          <Clock className="h-12 w-12 text-muted-foreground mb-4 opacity-20" />
-          <p className="text-lg font-medium text-muted-foreground">No executions yet</p>
-          <p className="text-sm text-muted-foreground mt-1">Executions will appear here once the workflow is triggered.</p>
+        <div className="flex flex-col items-center justify-center py-32 px-6 border-2 border-dashed rounded-3xl bg-white text-center shadow-sm">
+          <div className="h-16 w-16 bg-slate-100 rounded-full flex items-center justify-center mb-6">
+            <Clock className="h-8 w-8 text-slate-400" />
+          </div>
+          <h2 className="text-2xl font-bold text-slate-900 mb-2">No executions found</h2>
+          <p className="text-muted-foreground max-w-sm">
+            Once this workflow is triggered, its performance and history logs will appear here.
+          </p>
         </div>
       ) : (
-        <div className="bg-background border rounded-xl overflow-hidden shadow-sm">
-          <table className="w-full text-left">
-            <thead className="bg-secondary/50 border-b">
-              <tr>
-                <th className="px-6 py-4 text-sm font-semibold">Status</th>
-                <th className="px-6 py-4 text-sm font-semibold">Execution ID</th>
-                <th className="px-6 py-4 text-sm font-semibold">Time</th>
-                <th className="px-6 py-4 text-sm font-semibold">Details</th>
-              </tr>
-            </thead>
-            <tbody className="divide-y">
-              {executions.map((execution) => (
-                <tr key={execution._id} className="hover:bg-secondary/20 transition-colors">
-                  <td className="px-6 py-4">
-                    {execution.status === "COMPLETED" ? (
-                      <div className="flex items-center text-green-600">
-                        <CheckCircle2 className="h-4 w-4 mr-2" />
-                        <span className="text-sm font-medium">Completed</span>
-                      </div>
-                    ) : execution.status === "FAILED" ? (
-                      <div className="flex items-center text-destructive">
-                        <XCircle className="h-4 w-4 mr-2" />
-                        <span className="text-sm font-medium">Failed</span>
-                      </div>
-                    ) : (
-                      <div className="flex items-center text-amber-500">
-                        <Clock className="h-4 w-4 mr-2" />
-                        <span className="text-sm font-medium">Pending</span>
-                      </div>
-                    )}
-                  </td>
-                  <td className="px-6 py-4 text-sm font-mono text-muted-foreground">
-                    {execution._id.slice(-8)}
-                  </td>
-                  <td className="px-6 py-4 text-sm text-muted-foreground">
-                    {new Date(execution.createdAt || Date.now()).toLocaleString()}
-                  </td>
-                  <td className="px-6 py-4">
-                    <Button variant="link" size="sm" className="p-0 h-auto">View Logs</Button>
-                  </td>
-                </tr>
-              ))}
-            </tbody>
-          </table>
+        <div className="space-y-6">
+          {executions.map((execution) => (
+            <div key={execution._id} className="group flex flex-col md:flex-row items-start md:items-center justify-between p-8 bg-white border border-slate-100 rounded-2xl shadow-sm hover:shadow-xl hover:border-slate-200 transition-all duration-300">
+              <div className="space-y-4 w-full">
+                <div className="flex items-center gap-3">
+                    <h3 className="text-xl font-bold text-slate-900 group-hover:text-primary transition-colors">
+                        Execution <span className="font-mono text-slate-400 text-base font-normal">{execution._id}</span>
+                    </h3>
+                </div>
+                
+                <div className="flex flex-col sm:flex-row gap-6 sm:gap-12">
+                    <div className="space-y-1">
+                        <p className="text-xs uppercase tracking-widest font-bold text-slate-400">Started</p>
+                        <p className="text-sm font-medium text-slate-600">
+                            {formatDateTime(execution.createdAt || execution.startTime)}
+                        </p>
+                    </div>
+                    <div className="space-y-1">
+                        <p className="text-xs uppercase tracking-widest font-bold text-slate-400">Ended</p>
+                        <p className="text-sm font-medium text-slate-600">
+                            {formatDateTime(execution.endedAt || execution.endTime || execution.createdAt)}
+                        </p>
+                    </div>
+                </div>
+              </div>
+
+              <div className="mt-6 md:mt-0 pt-6 md:pt-0 border-t md:border-0 w-full md:w-auto flex items-center justify-end">
+                {getStatusBadge(execution.status)}
+              </div>
+            </div>
+          ))}
         </div>
       )}
     </div>
